@@ -23,6 +23,9 @@ public class Protocol {
     public static final String RX_MSGS = "MSGS" + RX_ESP + RX_USER_DOMAIN + RX_ESP + RX_MESSAGE + RX_CRLF ;
     public static final String RX_OK = "\\+OK" + RX_INFORMATION_MESSAGE + RX_CRLF;
     public static final String RX_ERR = "-ERR" + RX_INFORMATION_MESSAGE + RX_CRLF;
+    public static final String RX_SALT = "((\\$2b\\$14)|\\$2y\\$14)" + RX_RANDOM;
+    public static final String RX_HASH = "((" + RX_LETTER_DIGIT + "|" + RX_SYMBOL + "){0,200})";
+    private static final String RX_REGISTER  = "REGISTER" + RX_ESP + RX_USERNAME + RX_ESP + RX_ROUND + RX_ESP + RX_SALT + RX_HASH + RX_CRLF;
     public static final String CONFIRM_MSG = "CONFIRM <sha3hexstring>\r\n";
     public static final String REGISTER_MSG = "REGISTER <username> <salt_length> <bcrypt_hash>\r\n";
     public static final String MSG_MSG = "MSG <message>\r\n";
@@ -38,12 +41,7 @@ public class Protocol {
     public static final int PARSE_OK = 2;
     public static final int PARSE_ERR = 3;
     public static final int PARSE_MSGS = 4;
-    public String build_connect(String username){
-        return CONNECT_MSG.replace("<username>",username);
-    }
-    public String build_register(String username,int length, String hash){
-        return REGISTER_MSG.replace("<username>",username).replace("<salt_length>",String.valueOf(length)).replace("<bcrypt_hash>",hash);
-    }
+
     public String build_confirm(String sha3hex){
         return CONFIRM_MSG.replace("<sha3hexstring>",sha3hex);
     }
@@ -56,26 +54,14 @@ public class Protocol {
     public String build_disconnect(){
         return DISCONNECT_MSG;
     }
-    public String[] parse_Hello(String message){
-        if(parse(message,false)== PARSE_HELLO) return get_elements_from_regex(message,RX_HELLO, new int[]{1, 3});
-        return null;
-    }
-    public String[] parse_Param(String message){
-        if(parse(message,false)== PARSE_PARAM) return get_elements_from_regex(message,RX_PARAM, new int[]{1, 2});
-        return null;
-    }
-    public String[] parse_Msgs(String message){
-        if(parse(message,false)== PARSE_MSGS) return get_elements_from_regex(message,RX_MSGS, new int[]{1, 6});
+
+    public String[] parse_Register(String message){
+        if(message.matches(RX_REGISTER)) return  get_elements_from_regex(message);
         return null;
     }
 
-    public String[] get_elements_from_regex(String message,String rx,int[] elements){
-        String[] result = new String[elements.length];
-        String[] split = message.split(rx);
-        for(int i = 0; i < elements.length; i++){
-            result[i] = split[elements[i]];
-        }
-        return result;
+    public String[] get_elements_from_regex(String message){
+        return message.split(RX_ESP);
     }
 
     public int parse(String message,boolean debug){
@@ -88,14 +74,28 @@ public class Protocol {
         return PARSE_UNKNOW;
     }
 
-
+    private static final String HELLO_MSG = "HELLO <domain> <random>\r\n";
     public String build_hello_message(String domain) {
-        // generate sring with 22 random characters en utilisant regex
-        StringBuilder random = new StringBuilder();
-        for (int i = 0; i < 22; i++) {
-            random.append((char) (Math.random() * 255));
+        //generate random string with RX_RANDOM 22 characters
+        String random ="";
+        for(int i = 0; i < 22; i++){
+            int random_int = (int)(Math.random() * 3);
+            switch (random_int){
+                case 0:
+                    random += (char)((int)(Math.random() * 10) + 48);
+                    break;
+                case 1:
+                    random += (char)((int)(Math.random() * 26) + 65);
+                    break;
+                case 2:
+                    random += (char)((int)(Math.random() * 26) + 97);
+                    break;
+                default:
+                    random += (char)((int)(Math.random() * 15) + 33);
+                    break;
+            }
         }
-        return RX_HELLO.replace(RX_RANDOM, random.toString()).replace(RX_DOMAIN, domain).replace(RX_CRLF, "\r\n");
+        return HELLO_MSG.replace("<domain>", domain).replace("<random>", random);
 
     }
 }

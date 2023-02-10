@@ -34,14 +34,10 @@ public class ClientRunnable implements Runnable {
             System.out.printf("Ligne reçue : %s\r\n", ligne);
             while(isConnected && ligne != null) {
 
-                //if (protocol.parse(ligne,true)==Protocol.PA)
-                controller.broadcastToAllClientsExceptMe(this, ligne);
-                //Vérifier si la ligne recue est la commande register grace a la classe Protocol
-//                if(protocol.isRegisterCommand(ligne)) {
-//                    //Si c'est le cas, on envoie un message de bienvenue
-//                    sendMessage(protocol.getWelcomeMessage());
-//                }
-                sendMessage(protocol.build_hello_message("localhost"));
+                String[] tab = protocol.parse_Register(ligne);
+                //TODO : vérifier que le sel et le hash sont corrects si oui envoyer +OK sinon -ERR
+                sendMessage("+OK\r\n");
+
                 ligne = in.readLine();
             }
         } catch(IOException ex) { ex.printStackTrace(); }
