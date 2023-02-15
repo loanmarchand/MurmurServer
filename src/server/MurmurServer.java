@@ -22,7 +22,6 @@ public class MurmurServer {
                 ClientRunnable runnable = new ClientRunnable(client, this);
                 clientList.add(runnable);
                 (new Thread(runnable)).start();
-
             }
 
         } catch(IOException ex) {
@@ -43,6 +42,4 @@ public class MurmurServer {
     public static void main(String[] args) {
         new MurmurServer(DEFAULT_PORT);
     }
-
-
 }
