@@ -33,10 +33,18 @@ public class ClientRunnable implements Runnable {
             String ligne = in.readLine();
             System.out.printf("Ligne reçue : %s\r\n", ligne);
             while(isConnected && ligne != null) {
+                if (ligne.matches(protocol.getRxRegister())){
+                    System.out.println("Register");
+                    sendMessage("+OK\r\n");
+                }
+                if(ligne.matches(protocol.getRxConnect())){
+                    System.out.println("Connect");
+                    sendMessage("+OK\r\n");
+                }
 
-                String[] tab = protocol.parse_Register(ligne);
                 //TODO : vérifier que le sel et le hash sont corrects si oui envoyer +OK sinon -ERR
-                sendMessage("+OK\r\n");
+
+
 
                 ligne = in.readLine();
             }
