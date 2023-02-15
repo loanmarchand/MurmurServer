@@ -1,4 +1,4 @@
-package model;
+package java.model;
 
 import java.io.*;
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class Json {
         System.out.println("Fin du programme Json");
     }
     public boolean ajouterUtilisateur(Utilisateur utilisateur) {
-        String nom_fichier = "src\\model\\liste_utilisateurs.json";
+        String nom_fichier = "src\\java.model\\liste_utilisateurs.json";
         File fichier = new File(nom_fichier);
 
         if (!fichier.exists()) {
