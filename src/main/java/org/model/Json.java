@@ -1,8 +1,8 @@
-package java.model;
+package org.model;
 
 import java.io.*;
 import java.io.IOException;
-import org.json.JSONObject;
+
 
 
 public class Json {

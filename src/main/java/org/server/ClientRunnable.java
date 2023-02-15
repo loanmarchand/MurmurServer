@@ -1,7 +1,6 @@
-package java.server;
+package org.server;
 
-import java.model.Protocol;
-
+import org.model.Protocol;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;

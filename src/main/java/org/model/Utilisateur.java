@@ -1,4 +1,4 @@
-package java.model;
+package org.model;
 
 public class Utilisateur {
     private final String nom;
