@@ -10,6 +10,8 @@ import java.util.List;
 
 public class Json {
 
+    private static final String URL_JSON = "src/main/resources/data.json";
+
     public static void main(String[] args) {
         ApplicationData data = new ApplicationData();
         data.setCurrentDomain("server1.godswila.guru");
@@ -67,15 +69,15 @@ public class Json {
         data.setTags(tags);
 
         String path = "src/main/java/org/model/test.json";
-        sauvegarder(data, path);
-        List<Utilisateur> listeUser = getListeUser(path);
+        sauvegarder(data);
+        List<Utilisateur> listeUser = getListeUser();
 
-        System.out.println("Voici le pseudo de l'utilisateur 1: " + getUser(path, "lswinnen").getLogin());
+        System.out.println("Voici le pseudo de l'utilisateur 1: " + getUser("lswinnen").getLogin());
     }
 
-    public static void sauvegarder(ApplicationData data, String path) {
+    public static void sauvegarder(ApplicationData data) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        File file = new File(path);
+        File file = new File(URL_JSON);
 
         try {
             file.createNewFile();
@@ -84,18 +86,18 @@ public class Json {
             return;
         }
 
-        try (FileWriter writer = new FileWriter(path)) {
+        try (FileWriter writer = new FileWriter(URL_JSON)) {
             gson.toJson(data, writer);
         } catch (JsonIOException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static List<Utilisateur> getListeUser(String path) {
+    public static List<Utilisateur> getListeUser() {
         Gson gson = new Gson();
         List<Utilisateur> users = new ArrayList<>();
 
-        try (Reader reader = new FileReader(path)) {
+        try (Reader reader = new FileReader(URL_JSON)) {
             ApplicationData data = gson.fromJson(reader, ApplicationData.class);
             users = data.getUsers();
         } catch (IOException e) {
@@ -105,11 +107,11 @@ public class Json {
         return users;
     }
 
-    public static Utilisateur getUser(String path, String login) {
+    public static Utilisateur getUser(String login) {
         Gson gson = new Gson();
         Utilisateur user = new Utilisateur();
 
-        try (Reader reader = new FileReader(path)) {
+        try (Reader reader = new FileReader(URL_JSON)) {
             ApplicationData data = gson.fromJson(reader, ApplicationData.class);
             List<Utilisateur> users = data.getUsers();
             for (Utilisateur u : users) {

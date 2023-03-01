@@ -18,6 +18,8 @@ public class ClientRunnable implements Runnable {
     private Protocol protocol;
     private String randomCaract;
 
+    private final
+
     public ClientRunnable(Socket client, MurmurServer controller) {
         this.monClient = client;
         this.controller=  controller;
