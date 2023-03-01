@@ -1,5 +1,6 @@
 package org.server;
 
+import org.model.Json;
 import org.model.Protocol;
 import java.io.*;
 import java.net.Socket;
@@ -17,6 +18,8 @@ public class ClientRunnable implements Runnable {
     private Protocol protocol;
     private String randomCaract;
 
+    private final
+
     public ClientRunnable(Socket client, MurmurServer controller) {
         this.monClient = client;
         this.controller=  controller;
@@ -29,6 +32,7 @@ public class ClientRunnable implements Runnable {
     }
 
     public void run() {
+        Json json = new Json();
         try {
             //Récuperer l'adresse du client et construis le message hello aléatoire
             String clientAddress = monClient.getInetAddress().getHostAddress();
