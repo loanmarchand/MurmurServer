@@ -1,5 +1,6 @@
 package org.server;
 
+import org.model.Json;
 import org.model.Protocol;
 import java.io.*;
 import java.net.Socket;
@@ -29,6 +30,7 @@ public class ClientRunnable implements Runnable {
     }
 
     public void run() {
+        Json json = new Json();
         try {
             //Récuperer l'adresse du client et construis le message hello aléatoire
             String clientAddress = monClient.getInetAddress().getHostAddress();
@@ -74,6 +76,7 @@ public class ClientRunnable implements Runnable {
         String sha3hash;
 
         //TODO : getUserByName
+
 
         //Envoie un message connect avec le round et le sel
         sendMessage(protocol.build_connect_message(user.getRound,user.getSel));
