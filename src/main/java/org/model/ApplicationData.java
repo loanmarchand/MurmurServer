@@ -109,6 +109,14 @@ public class ApplicationData {
     public List<Utilisateur> getUsers() {
         return users;
     }
+    public Utilisateur getUser(String login) {
+        for (Utilisateur user : users) {
+            if (user.getLogin().equals(login)) {
+                return user;
+            }
+        }
+        return null;
+    }
 
     public void setUsers(List<Utilisateur> users) {
         this.users = users;

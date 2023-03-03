@@ -127,4 +127,17 @@ public class Json {
         return null;
     }
 
+    public static ApplicationData getAppData() {
+        Gson gson = new Gson();
+        try (Reader reader = new FileReader(URL_JSON)) {
+            ApplicationData data = gson.fromJson(reader, ApplicationData.class);
+
+            return data;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }

@@ -1,13 +1,12 @@
 package org.server;
 
-import org.model.Json;
-import org.model.Protocol;
-import org.model.Utilisateur;
+import org.model.*;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,11 +18,14 @@ public class ClientRunnable implements Runnable {
     private final MurmurServer controller;
     private Protocol protocol;
     private String randomCaract;
+    private final ApplicationData appData;
+    private String login;
 
 
     public ClientRunnable(Socket client, MurmurServer controller) {
         this.monClient = client;
         this.controller=  controller;
+        appData = Json.getAppData();
         protocol = new Protocol();
         try {
             in = new BufferedReader(new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
@@ -50,6 +52,12 @@ public class ClientRunnable implements Runnable {
             while(isConnected && ligne != null) {
                 if (ligne.matches(protocol.getRxRegister())){
                     System.out.println("Register");
+                    //TODO : sauv user
+                    Pattern pattern = Pattern.compile(protocol.getRxRegister());
+                    Matcher matcher = pattern.matcher(ligne);
+                    if(matcher.find()){
+                        login = matcher.group(1);
+                    }
                     sendMessage("+OK\r\n");
                 }
                 if(ligne.matches(protocol.getRxConnect())){
@@ -58,13 +66,13 @@ public class ClientRunnable implements Runnable {
                     //TODO : ça marche vraiment ?
                     Pattern pattern = Pattern.compile(protocol.getRxConnect());
                     Matcher matcher = pattern.matcher(ligne);
-                    String name = matcher.group(1);
-
-
-
-                    connectUser(name);
+                    login = matcher.group(1);
+                    connectUser(login);
                     sendMessage("+OK\r\n");
                 }
+
+                //TODO : RÉCUPERER LE MESSAGE ET L'AJOUTTER AU FOLLOW
+
 
                 //TODO : CHANGER COMMENT GET HELLO CARACT STRING
                 //TODO : CONNECTUSER
@@ -77,6 +85,57 @@ public class ClientRunnable implements Runnable {
                 ligne = in.readLine();
             }
         } catch(IOException ex) { ex.printStackTrace(); }
+    }
+
+    public static void main(String[] args) {
+        String ligne = "FOLLOW jeans@serv1.godwsilla.guru";
+        Protocol protocol = new Protocol();
+        ApplicationData appData = Json.getAppData();
+        String login = "romain";
+
+        if (ligne.matches(protocol.getRxFollow())){
+            Pattern pattern = Pattern.compile(protocol.getRxFollow());
+            Matcher matcher = pattern.matcher(ligne);
+            if (matcher.find()){
+                String group = matcher.group(1);
+                System.out.println(group);
+                if (group.matches(protocol.getRxUserDomain())){
+                    List<String> followers = appData.getUser(login).getFollowers();
+                    //vérifier si la liste contient déjà le follow
+                    if (followers.contains(group)){
+                        System.out.println("Vous suivez déjà cet utilisateur");
+                    }
+                    else {
+                        followers.add(group);
+                        appData.getUser(login).setFollowers(followers);
+                        //affiche les variables de appData
+                        System.out.println(appData.getUser(login).getFollowers());
+                    }
+
+
+                }
+                if (group.equals(protocol.getRxTagDomain())){
+                    List<String> tags = appData.getUser(login).getUserTags();
+                    tags.add(group);
+                    appData.getUser(login).setUserTags(tags);
+                    List<Tag> tagList = appData.getTags();
+                    int i = 0;
+                    for (Tag tag : tagList){
+                        if (tag.getTag().equals(group)){
+                            List<String> users = tag.getFollowers();
+                            users.add(login);
+                            tag.setFollowers(users);
+                            i++;
+                        }
+                    }
+                    if (i == 0){
+                        Tag newTag = new Tag(group, List.of(login));
+                        tagList.add(newTag);
+                    }
+                }
+                Json.sauvegarder(appData);
+            }
+        }
     }
 
     public void connectUser(String name){
