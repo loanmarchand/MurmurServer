@@ -119,11 +119,12 @@ public class Json {
                     user = u;
                 }
             }
+            return user;
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return user;
+        return null;
     }
 
 }

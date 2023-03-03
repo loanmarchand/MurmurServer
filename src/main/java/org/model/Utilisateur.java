@@ -2,7 +2,7 @@ package org.model;
 
 import java.util.List;
 
-class Utilisateur {
+public class Utilisateur {
     private String login;
     private String bcryptHash;
     private int bcryptRound;

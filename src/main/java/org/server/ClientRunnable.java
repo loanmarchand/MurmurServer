@@ -2,6 +2,8 @@ package org.server;
 
 import org.model.Json;
 import org.model.Protocol;
+import org.model.Utilisateur;
+
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -18,7 +20,6 @@ public class ClientRunnable implements Runnable {
     private Protocol protocol;
     private String randomCaract;
 
-    private final
 
     public ClientRunnable(Socket client, MurmurServer controller) {
         this.monClient = client;
@@ -32,7 +33,6 @@ public class ClientRunnable implements Runnable {
     }
 
     public void run() {
-        Json json = new Json();
         try {
             //Récuperer l'adresse du client et construis le message hello aléatoire
             String clientAddress = monClient.getInetAddress().getHostAddress();
@@ -54,9 +54,14 @@ public class ClientRunnable implements Runnable {
                 }
                 if(ligne.matches(protocol.getRxConnect())){
                     System.out.println("Connect");
+
+                    //TODO : ça marche vraiment ?
                     Pattern pattern = Pattern.compile(protocol.getRxConnect());
                     Matcher matcher = pattern.matcher(ligne);
                     String name = matcher.group(1);
+
+
+
                     connectUser(name);
                     sendMessage("+OK\r\n");
                 }
@@ -77,25 +82,25 @@ public class ClientRunnable implements Runnable {
     public void connectUser(String name){
         String sha3hash;
 
-        //TODO : getUserByName
+        Utilisateur user = Json.getUser(name);
 
+        if(user == null){
+            sendMessage("-ERR\r\n");
+        }else{
+            //Envoie un message connect avec le round et le sel
+            sendMessage(protocol.build_connect_message(user.getBcryptRound(),user.getBcryptSalt()));
 
-        //Envoie un message connect avec le round et le sel
-        sendMessage(protocol.build_connect_message(user.getRound,user.getSel));
+            //Calcule le sha3 sur base des 22 caractères du message HELLO, et de la chaineHashBcrypt
+            try{
+                MessageDigest messDigest = MessageDigest.getInstance("SHA3-256");
+                byte[] digest = messDigest.digest((this.randomCaract+user.getBcryptHash()).getBytes());
+                sha3hash = new String(digest);
+            }catch (Exception e){
+                System.out.println("Erreur dans le sha3-256");
+            }
 
-        //Calcule le sha3 sur base des 22 caractères du message HELLO, et de la chaineHashBcrypt
-        try{
-            MessageDigest messDigest = MessageDigest.getInstance("SHA3-256");
-            byte[] digest = messDigest.digest((this.randomCaract+user.getChainHashBcrypt).getBytes());
-            sha3hash = new String(digest);
-        }catch (Exception e){
-            System.out.println("Erreur dans le sha3-256");
+            //TODO : Vérifier l'égalisation de confirm et du sha
         }
-
-
-
-        //TODO : calculer le sha3 de ce coté
-        //TODO : Vérifier l'égalisation de confirm et du sha
 
     }
 
