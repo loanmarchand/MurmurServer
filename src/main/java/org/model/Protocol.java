@@ -101,7 +101,7 @@ public class Protocol {
 
     }
 
-    public String build_connect_message(int round,String sel){
+    public String build_param_message(int round, String sel){
         return PARAM_MSG.replace("<round>",Integer.toString(round)).replace("<bcryptsel>",sel);
     }
 
