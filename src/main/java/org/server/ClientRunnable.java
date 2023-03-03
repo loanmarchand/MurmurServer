@@ -22,6 +22,8 @@ public class ClientRunnable implements Runnable {
     private Protocol protocol;
     private String randomCaract;
     private ApplicationData applicationData;
+    private String shaCalculated;
+    private Utilisateur user;
 
 
     public ClientRunnable(Socket client, MurmurServer controller) {
@@ -37,7 +39,6 @@ public class ClientRunnable implements Runnable {
     }
 
     public void run() {
-        Json json = new Json();
         try {
             //Récuperer l'adresse du client et construis le message hello aléatoire
             String clientAddress = monClient.getInetAddress().getHostAddress();
@@ -75,12 +76,29 @@ public class ClientRunnable implements Runnable {
                     sendMessage("+OK\r\n");
                 }
                 if(ligne.matches(protocol.getRxConnect())){
+                    String name=null;
                     System.out.println("Connect");
+
+                    //Récupère le nom d'utilisateur
                     Pattern pattern = Pattern.compile(protocol.getRxConnect());
                     Matcher matcher = pattern.matcher(ligne);
-                    String name = matcher.group(1);
+                    if (matcher.find()) {
+                        name = matcher.group(1);
+                    }
                     connectUser(name);
-                    sendMessage("+OK\r\n");
+
+                }if(ligne.matches(protocol.getRxConfirm())){
+                    String shaRecieved=null;
+                    Pattern pattern = Pattern.compile(protocol.getRxConfirm());
+                    Matcher matcher = pattern.matcher(ligne);
+                    if (matcher.find()) {
+                        shaRecieved = matcher.group(1);
+                    }
+                    if(shaRecieved.equals(shaCalculated)){
+                        sendMessage("+OK\r\n");
+                    }else{
+                        sendMessage("-ERR\r\n");
+                    }
                 }
 
                 //TODO : CHANGER COMMENT GET HELLO CARACT STRING
@@ -96,27 +114,33 @@ public class ClientRunnable implements Runnable {
         } catch(IOException ex) { ex.printStackTrace(); }
     }
 
+    /**
+     * Récupère et stocke l'utilisateur qui tente de se connecter, lui envoie les informations pour calculer le hash
+     * Calcule le hash et le stocke
+     * @param name nom d'utilisateur
+     */
     public void connectUser(String name){
-//        String sha3hash;
-//
-//        //TODO : getUserByName
-//
-//        //Envoie un message connect avec le round et le sel
-//        sendMessage(protocol.build_connect_message(user.getRound,user.getSel));
-//
-//        //Calcule le sha3 sur base des 22 caractères du message HELLO, et de la chaineHashBcrypt
-//        try{
-//            MessageDigest messDigest = MessageDigest.getInstance("SHA3-256");
-//            byte[] digest = messDigest.digest((this.randomCaract+user.getChainHashBcrypt).getBytes());
-//            sha3hash = new String(digest);
-//        }catch (Exception e){
-//            System.out.println("Erreur dans le sha3-256");
-//        }
-//
-//
-//
-//        //TODO : calculer le sha3 de ce coté
-//        //TODO : Vérifier l'égalisation de confirm et du sha
+        String sha3hash;
+
+        user = Json.getUser(name);
+
+        //Si utilisateur pas trouvé dans le fichier, -ERR
+        if(user == null){
+            System.out.printf("Erreur");
+            sendMessage("-ERR\r\n");
+        }else{
+            //Envoie un message param avec le round et le sel
+            sendMessage(protocol.build_param_message(user.getBcryptRound(),user.getBcryptSalt()));
+
+            //Calcule le sha3 sur base des 22 caractères du message HELLO, et de la chaineHashBcrypt
+            try{
+                MessageDigest messDigest = MessageDigest.getInstance("SHA3-256");
+                byte[] digest = messDigest.digest((this.randomCaract+user.getBcryptHash()).getBytes());
+                shaCalculated = new String(digest);
+            }catch (Exception e){
+                System.out.println("Erreur dans le sha3-256");
+            }
+        }
 
     }
 

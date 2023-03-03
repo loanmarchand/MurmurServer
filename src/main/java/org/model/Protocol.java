@@ -1,8 +1,5 @@
 package org.model;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class Protocol {
 
     public static final String RX_DIGIT = "[0-9]";
@@ -104,7 +101,7 @@ public class Protocol {
 
     }
 
-    public String build_connect_message(int round,String sel){
+    public String build_param_message(int round, String sel){
         return PARAM_MSG.replace("<round>",Integer.toString(round)).replace("<bcryptsel>",sel);
     }
 
@@ -117,19 +114,4 @@ public class Protocol {
     }
 
     public String getRxConfirm(){return RX_CONFIRM;}
-}
-
-class test {
-    private static Protocol protocol = new Protocol();
-
-    public static void main(String[] args){
-        Pattern pattern = Pattern.compile(protocol.getRxRegister());
-        Matcher matcher = pattern.matcher("REGISTER romain 22 $2b$14$Oxquvx8vSx/kyz/dcXXV4OQn2PZe6uw5qTPgfIAKK4C4I/QhC.H6S");
-        if (matcher.find()) {
-            // Parcourir tout les groupes et les afficher
-            for (int i = 0; i <= matcher.groupCount(); i++) {
-                System.out.println("Groupe " + i + " : " + matcher.group(i));
-            }
-        }
-    }
 }
