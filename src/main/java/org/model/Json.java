@@ -68,7 +68,6 @@ public class Json {
 
         data.setTags(tags);
 
-        String path = "src/main/java/org/model/test.json";
         sauvegarder(data);
         List<Utilisateur> listeUser = getListeUser();
 
@@ -78,6 +77,11 @@ public class Json {
     public static void sauvegarder(ApplicationData data) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         File file = new File(URL_JSON);
+
+        // Si le dossier n'existe pas, on le crée
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+        }
 
         try {
             file.createNewFile();
@@ -101,7 +105,7 @@ public class Json {
             ApplicationData data = gson.fromJson(reader, ApplicationData.class);
             users = data.getUsers();
         } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         }
 
         return users;
@@ -121,10 +125,21 @@ public class Json {
             }
             return user;
         } catch (IOException e) {
+            return null;
+        }
+    }
+
+    public static ApplicationData getApplicationData() {
+        Gson gson = new Gson();
+        ApplicationData data = new ApplicationData();
+
+        try (Reader reader = new FileReader(URL_JSON)) {
+            data = gson.fromJson(reader, ApplicationData.class);
+            return data;
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         return null;
     }
-
 }

@@ -8,6 +8,7 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +34,7 @@ public class ClientRunnable implements Runnable {
     }
 
     public void run() {
+        Json json = new Json();
         try {
             //Récuperer l'adresse du client et construis le message hello aléatoire
             String clientAddress = monClient.getInetAddress().getHostAddress();
@@ -50,18 +52,27 @@ public class ClientRunnable implements Runnable {
             while(isConnected && ligne != null) {
                 if (ligne.matches(protocol.getRxRegister())){
                     System.out.println("Register");
+
+                    // Créer un objet Pattern et Matcher pour la regex protocol.getRxRegister()
+                    Pattern pattern = Pattern.compile(protocol.getRxRegister());
+                    Matcher matcher = pattern.matcher(ligne);
+
+                    // Récupérer la valeur de RX_ESP à partir de la chaîne ligne
+                    if (matcher.find()) {
+                        String rx_username = matcher.group(1);
+                        int rx_round = Integer.parseInt(matcher.group());
+                        String salt = matcher.group("RX_SALT");
+                        String rx_hash = matcher.group("RX_HASH");
+                        Utilisateur user = new Utilisateur(rx_username, rx_hash, rx_round, salt, new ArrayList<String>(), new ArrayList<String>(), 0);
+                    }
+
                     sendMessage("+OK\r\n");
                 }
                 if(ligne.matches(protocol.getRxConnect())){
                     System.out.println("Connect");
-
-                    //TODO : ça marche vraiment ?
                     Pattern pattern = Pattern.compile(protocol.getRxConnect());
                     Matcher matcher = pattern.matcher(ligne);
                     String name = matcher.group(1);
-
-
-
                     connectUser(name);
                     sendMessage("+OK\r\n");
                 }
@@ -80,27 +91,26 @@ public class ClientRunnable implements Runnable {
     }
 
     public void connectUser(String name){
-        String sha3hash;
-
-        Utilisateur user = Json.getUser(name);
-
-        if(user == null){
-            sendMessage("-ERR\r\n");
-        }else{
-            //Envoie un message connect avec le round et le sel
-            sendMessage(protocol.build_connect_message(user.getBcryptRound(),user.getBcryptSalt()));
-
-            //Calcule le sha3 sur base des 22 caractères du message HELLO, et de la chaineHashBcrypt
-            try{
-                MessageDigest messDigest = MessageDigest.getInstance("SHA3-256");
-                byte[] digest = messDigest.digest((this.randomCaract+user.getBcryptHash()).getBytes());
-                sha3hash = new String(digest);
-            }catch (Exception e){
-                System.out.println("Erreur dans le sha3-256");
-            }
-
-            //TODO : Vérifier l'égalisation de confirm et du sha
-        }
+//        String sha3hash;
+//
+//        //TODO : getUserByName
+//
+//        //Envoie un message connect avec le round et le sel
+//        sendMessage(protocol.build_connect_message(user.getRound,user.getSel));
+//
+//        //Calcule le sha3 sur base des 22 caractères du message HELLO, et de la chaineHashBcrypt
+//        try{
+//            MessageDigest messDigest = MessageDigest.getInstance("SHA3-256");
+//            byte[] digest = messDigest.digest((this.randomCaract+user.getChainHashBcrypt).getBytes());
+//            sha3hash = new String(digest);
+//        }catch (Exception e){
+//            System.out.println("Erreur dans le sha3-256");
+//        }
+//
+//
+//
+//        //TODO : calculer le sha3 de ce coté
+//        //TODO : Vérifier l'égalisation de confirm et du sha
 
     }
 
