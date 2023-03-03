@@ -121,6 +121,10 @@ public class ApplicationData {
     public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
+
+    public void addUser(Utilisateur user) {
+        this.users.add(user);
+    }
 }
 
 

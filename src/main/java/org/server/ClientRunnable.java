@@ -1,5 +1,6 @@
 package org.server;
 
+import org.model.ApplicationData;
 import org.model.Json;
 import org.model.Protocol;
 import org.model.Utilisateur;
@@ -20,9 +21,11 @@ public class ClientRunnable implements Runnable {
     private final MurmurServer controller;
     private Protocol protocol;
     private String randomCaract;
+    private ApplicationData applicationData;
 
 
     public ClientRunnable(Socket client, MurmurServer controller) {
+        this.applicationData = Json.getApplicationData();
         this.monClient = client;
         this.controller=  controller;
         protocol = new Protocol();
@@ -49,6 +52,7 @@ public class ClientRunnable implements Runnable {
 
             String ligne = in.readLine();
             System.out.printf("Ligne reçue : %s\r\n", ligne);
+            System.out.println("Regex : " + protocol.getRxRegister());
             while(isConnected && ligne != null) {
                 if (ligne.matches(protocol.getRxRegister())){
                     System.out.println("Register");
@@ -60,10 +64,12 @@ public class ClientRunnable implements Runnable {
                     // Récupérer la valeur de RX_ESP à partir de la chaîne ligne
                     if (matcher.find()) {
                         String rx_username = matcher.group(1);
-                        int rx_round = Integer.parseInt(matcher.group());
-                        String salt = matcher.group("RX_SALT");
-                        String rx_hash = matcher.group("RX_HASH");
+                        String rx_hash = matcher.group(9);
+                        int rx_round = Integer.parseInt(matcher.group(6));
+                        String salt = matcher.group(7);
                         Utilisateur user = new Utilisateur(rx_username, rx_hash, rx_round, salt, new ArrayList<String>(), new ArrayList<String>(), 0);
+                        applicationData.addUser(user);
+                        Json.sauvegarder(applicationData);
                     }
 
                     sendMessage("+OK\r\n");

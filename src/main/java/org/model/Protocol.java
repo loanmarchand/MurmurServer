@@ -26,7 +26,7 @@ public class Protocol {
     public static final String RX_MSGS = "MSGS" + RX_ESP + RX_USER_DOMAIN + RX_ESP + RX_MESSAGE + RX_CRLF ;
     public static final String RX_OK = "\\+OK" + RX_INFORMATION_MESSAGE + RX_CRLF;
     public static final String RX_ERR = "-ERR" + RX_INFORMATION_MESSAGE + RX_CRLF;
-    public static final String RX_SALT = "((\\$2b\\$14)|\\$2y\\$14)" + RX_RANDOM;
+    public static final String RX_SALT = "((\\$2b\\$(14)\\$)|\\$2y\\$14\\$)" + RX_RANDOM;
     public static final String RX_HASH = "((" + RX_LETTER_DIGIT + "|" + RX_SYMBOL + "){0,200})";
     private static final String RX_REGISTER  = "REGISTER" + RX_ESP + RX_USERNAME + RX_ESP + RX_ROUND + RX_ESP + RX_SALT + RX_HASH + RX_CRLF;
     public static final String CONFIRM_MSG = "CONFIRM <sha3hexstring>\r\n";
