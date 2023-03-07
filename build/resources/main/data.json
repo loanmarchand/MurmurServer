@@ -65,6 +65,15 @@
       "followers": [],
       "userTags": [],
       "lockoutCounter": 0
+    },
+    {
+      "login": "loans",
+      "bcryptHash": "JPB8C/mU3evH1Fsn49/8/rJvdQtTXgu",
+      "bcryptRound": 14,
+      "bcryptSalt": "Sx9cgmNWBIXBY2HEtEGxZ.",
+      "followers": [],
+      "userTags": [],
+      "lockoutCounter": 0
     }
   ],
   "tags": [

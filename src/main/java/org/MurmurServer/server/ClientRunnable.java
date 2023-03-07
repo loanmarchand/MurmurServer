@@ -6,6 +6,7 @@ import org.MurmurServer.model.*;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -112,6 +113,8 @@ public class ClientRunnable implements Runnable {
                     }else{
                         sendMessage("-ERR\r\n");
                     }
+                }if (ligne.matches(protocol.getRxDisconnect())) {
+                    sendMessage("+OK\r\n");
                 }
                 //Gestion des follows
                 if (ligne.matches(protocol.getRxFollow())){
@@ -205,7 +208,9 @@ public class ClientRunnable implements Runnable {
                 ligne = in.readLine();
                 System.out.printf("Ligne reçue : %s\r\n", ligne);
             }
-        } catch(IOException ex) { ex.printStackTrace(); }
+        } catch(IOException ex) {
+            System.out.println("Connexion perdue");
+        }
     }
 
 
