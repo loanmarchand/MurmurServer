@@ -8,6 +8,7 @@ import org.model.Utilisateur;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -106,17 +107,15 @@ public class ClientRunnable implements Runnable {
                     }else{
                         sendMessage("-ERR\r\n");
                     }
+                }if (ligne.matches(protocol.getRxDisconnect())) {
+                    sendMessage("+OK\r\n");
                 }
-                //TODO : CONNECTUSER
-
-
-                //TODO : vérifier que le sel et le hash sont corrects si oui envoyer +OK sinon -ERR
-
-
 
                 ligne = in.readLine();
             }
-        } catch(IOException ex) { ex.printStackTrace(); }
+        } catch(IOException ex) {
+            System.out.println("Connexion perdue");
+        }
     }
 
     /**
