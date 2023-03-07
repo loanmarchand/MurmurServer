@@ -1,7 +1,7 @@
-package org.server;
+package org.MurmurServer.server;
 
-import org.model.ApplicationData;
-import org.model.*;
+import org.MurmurServer.model.ApplicationData;
+import org.MurmurServer.model.*;
 
 import java.io.*;
 import java.math.BigInteger;

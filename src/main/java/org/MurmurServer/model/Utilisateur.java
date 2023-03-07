@@ -1,4 +1,4 @@
-package org.model;
+package org.MurmurServer.model;
 
 import java.util.List;
 import java.util.Objects;

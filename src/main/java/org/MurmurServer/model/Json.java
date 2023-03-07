@@ -1,4 +1,4 @@
-package org.model;
+package org.MurmurServer.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -6,9 +6,7 @@ import com.google.gson.JsonIOException;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Json {
 

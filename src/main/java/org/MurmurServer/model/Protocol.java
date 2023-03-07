@@ -1,4 +1,4 @@
-package org.model;
+package org.MurmurServer.model;
 
 public class Protocol {
 

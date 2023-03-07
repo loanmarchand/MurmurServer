@@ -1,6 +1,6 @@
-package org.server;
+package org.MurmurServer.server;
 
-import org.model.Protocol;
+import org.MurmurServer.model.Protocol;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
