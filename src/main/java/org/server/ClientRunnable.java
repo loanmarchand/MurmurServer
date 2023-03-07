@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ClientRunnable implements Runnable {
     private final Socket monClient;
@@ -57,6 +58,7 @@ public class ClientRunnable implements Runnable {
 
             //Récupère l'action de base du client
             String ligne = in.readLine();
+            //TODO : DECRYPTER LA LIGNE
             System.out.printf("Ligne reçue : %s\r\n", ligne);
 
             //Tant que le client est connecté et qu'il envoie des informations :
@@ -158,7 +160,44 @@ public class ClientRunnable implements Runnable {
                         Json.sauvegarder(applicationData);
                     }
                 }
+                //Gestion des messages
+                if (ligne.matches(protocol.getRxMessage())){
+                    applicationData = Json.getApplicationData();
+                    //separer le message en 3 groupes
+                    Pattern pattern = Pattern.compile(protocol.getRxMessage());
+                    Matcher matcher = pattern.matcher(ligne);
+                    if(matcher.find()){
+                        String group1 = matcher.group(1);
+                        //Chercher dans les users si il y en a un qui a l'utilisateur comme follower
+                        List<Utilisateur> users = applicationData.getUsers();
+                        List<Utilisateur> usersToBroadcast = new ArrayList<>();
+                        for (Utilisateur user : users){
+                            if (user.getFollowers().contains(this.user.getLogin()+"@"+applicationData.getCurrentDomain())){
+                                usersToBroadcast.add(user);
+                                System.out.println("Message envoyé à "+user.getLogin());
+                            }
+                        }
+                        //Récuperer les tags de l'user et verifier dans les tags si il y en a un qui a le tag comme follower
+                        List<String> tags = applicationData.getUser(this.user.getLogin()).getUserTags();//TODO : vérifier si ça marche
+                        for (String tag : tags){
+                            for (Tag tag1 : applicationData.getTags()){
+                                if (tag1.getTag().equals(tag)){
+                                    for (String user : tag1.getFollowers()){
+                                        System.out.println("Message envoyé à "+user);
+                                        usersToBroadcast.add(Json.getUser(user.split("@")[0]));}
+                                }
+                            }
+                        }
 
+                        //Vérifier qu'un utilisateur n'est pas dans la liste 2 fois
+                        usersToBroadcast = usersToBroadcast.stream().distinct().collect(Collectors.toList());
+                        //afficher les users qui vont recevoir le message
+                        for (Utilisateur user : usersToBroadcast){
+                            System.out.println(user.getLogin());
+                        }
+                        controller.broadcastToAllClientsExceptMe(usersToBroadcast, Protocol.createMessage(this.user.getLogin()+"@"+applicationData.getCurrentDomain(), group1), this);
+                    }
+                }
 
 
 
@@ -212,5 +251,10 @@ public class ClientRunnable implements Runnable {
             out.flush();
             // System.out.printf("Message envoyé: %s\n", message);
         }
+    }
+
+
+    public Utilisateur getUser() {
+        return user;
     }
 }

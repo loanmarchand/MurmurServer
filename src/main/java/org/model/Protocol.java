@@ -18,6 +18,7 @@ public class Protocol {
     public static final String RX_USERNAME = "((" + RX_LETTER_DIGIT +"){5,20})";
     public static final String RX_USER_DOMAIN = "(" + RX_USERNAME + "@" + RX_DOMAIN + ")";
     public static final String RX_MESSAGE = "((" + RX_VISIBLE_CHARACTER + "){1,250})";
+
     public static final String RX_HELLO = "HELLO" + RX_ESP + RX_DOMAIN + RX_ESP + RX_RANDOM + RX_CRLF;
     public static final String RX_PARAM = "PARAM" + RX_ESP + RX_ROUND + RX_ESP + RX_BCRYPT_SALT + RX_CRLF;
     public static final String RX_MSGS = "MSGS" + RX_ESP + RX_USER_DOMAIN + RX_ESP + RX_MESSAGE + RX_CRLF ;
@@ -46,6 +47,12 @@ public class Protocol {
     private static final String RX_TAG = "(#(" + RX_LETTER_DIGIT + "){1,20})";
     private static final String RX_TAG_DOMAIN = "(^#\\w+@[\\w\\.]+$)";
     private static final String RX_FOLLOW = "^FOLLOW\\s+(#?\\w+@[\\w\\.]+)$" + RX_CRLF;
+    private static final String RX_MSG = "^MSG\\s+(.*)$" + RX_CRLF;
+    private static final String MSGS = "MSGS <user> <message>\r\n";
+
+    public static String createMessage(String s, String group1) {
+        return MSGS.replace("<user>", s).replace("<message>", group1);
+    }
 
     public String build_confirm(String sha3hex){
         return CONFIRM_MSG.replace("<sha3hexstring>",sha3hex);
@@ -134,5 +141,9 @@ public class Protocol {
 
     public boolean matchesWithServDomain(String group, String currentDomain) {
         return group.split("@")[1].equals(currentDomain);
+    }
+
+    public String getRxMessage() {
+        return RX_MSG;
     }
 }

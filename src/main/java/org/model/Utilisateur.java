@@ -1,6 +1,7 @@
 package org.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Utilisateur {
     private String login;
@@ -79,5 +80,18 @@ public class Utilisateur {
 
     public void setLockoutCounter(int lockoutCounter) {
         this.lockoutCounter = lockoutCounter;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Utilisateur that = (Utilisateur) o;
+        return bcryptRound == that.bcryptRound && lockoutCounter == that.lockoutCounter && Objects.equals(login, that.login) && Objects.equals(bcryptHash, that.bcryptHash) && Objects.equals(bcryptSalt, that.bcryptSalt) && Objects.equals(followers, that.followers) && Objects.equals(userTags, that.userTags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(login, bcryptHash, bcryptRound, bcryptSalt, followers, userTags, lockoutCounter);
     }
 }

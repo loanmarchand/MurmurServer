@@ -1,5 +1,7 @@
 package org.server;
 
+import org.model.Utilisateur;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -30,11 +32,13 @@ public class MurmurServer {
 
     }
 
-    public void broadcastToAllClientsExceptMe(ClientRunnable me, String message) {
-        System.out.printf("[broadcastAll] Message envoyé : %s\n", message);
-        for(ClientRunnable c : clientList) {
-            if(c != me)
-                c.sendMessage(message);
+    public void broadcastToAllClientsExceptMe(List<Utilisateur> me, String message, ClientRunnable clientRunnable) {
+        //envoyer le message à tous les utilisateurs sauf moi
+        for(ClientRunnable client : clientList) {
+            //affiche client
+            if(me.contains(client.getUser()) && client != clientRunnable) {
+                client.sendMessage(message);
+            }
         }
 
     }
