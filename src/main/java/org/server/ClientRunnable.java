@@ -118,15 +118,11 @@ public class ClientRunnable implements Runnable {
         } catch(IOException ex) { ex.printStackTrace(); }
     }
 
-    /**
-     * Récupère et stocke l'utilisateur qui tente de se connecter, lui envoie les informations pour calculer le hash
-     * Calcule le hash et le stocke
-     * @param name nom d'utilisateur
-     */
+
     public static void main(String[] args) {
         String ligne = "FOLLOW jeans@serv1.godwsilla.guru";
         Protocol protocol = new Protocol();
-        ApplicationData appData = Json.getAppData();
+        ApplicationData appData = Json.getApplicationData();
         String login = "romain";
 
         if (ligne.matches(protocol.getRxFollow())){
@@ -174,6 +170,11 @@ public class ClientRunnable implements Runnable {
         }
     }
 
+    /**
+     * Récupère et stocke l'utilisateur qui tente de se connecter, lui envoie les informations pour calculer le hash
+     * Calcule le hash et le stocke
+     * @param name nom d'utilisateur
+     */
     public void connectUser(String name){
         String sha3hash;
 
