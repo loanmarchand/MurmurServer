@@ -2,53 +2,66 @@
   "currentDomain": "server1.godswila.guru",
   "saltSizeInBytes": 16,
   "multicastAddress": "224.1.1.255",
-  "multicastPort": 23845,
-  "unicastPort": 23846,
-  "relayPort": 23847,
+  "multicastPort": 22510,
+  "unicastPort": 22510,
+  "relayPort": 22510,
   "networkInterface": "eth12",
-  "base64AES": "P3FXqAUgfhy5cTjYdWlPQBJ/d6fdpbR88YsDPWPbo14\u003d",
+  "base64AES": "",
   "tls": true,
   "users": [
     {
-      "login": "lswinnen",
-      "bcryptHash": "tDtRfkGpCO5kuMqsPrda5RWRd3/j0Va",
+      "login": "loans",
+      "bcryptHash": "MC6L2I.TsuiF1wi6il0sEcLME7.BKUu",
       "bcryptRound": 14,
-      "bcryptSalt": "cD2UrFc62QNG5d5ogBQXTO",
-      "followers": [
-        "louis@server1.godswila.guru",
-        "swilabus@server2.godswila.guru"
-      ],
-      "userTags": [
-        "#tendance123@server1.godswila.guru"
-      ],
-      "lockoutCounter": 0
-    },
-    {
-      "login": "louis",
-      "bcryptHash": "p9EhYRnBripLCKGieLHXicOSU35jqUS",
-      "bcryptRound": 14,
-      "bcryptSalt": "Xy7qayjAB0YTIXTzdEUV2u",
+      "bcryptSalt": "GoolfIlpDOimfZ.7oQIrQ.",
       "followers": [],
       "userTags": [
-        "#tendance123@server1.godswila.guru",
-        "#tendance456@server2.godswila.guru"
+        "#tags@server1.godswila.guru",
+        "#teshd@sjfhj.Sgjdhg.SDd",
+        "#test2@server1.godswila.guru"
       ],
       "lockoutCounter": 0
     },
     {
       "login": "abcdef",
-      "bcryptHash": "GO.GAmqoZ8zJ2Mjo8/uBQc0I6LS3ZDq",
+      "bcryptHash": "DhyBdI2YyVCiaQYXrNtZ1bt4UFI4y2i",
       "bcryptRound": 14,
-      "bcryptSalt": "5AbXqnejqpVNZYKM.ABl3.",
+      "bcryptSalt": "UfL4kvbNPoqlsU5QnZhdTe",
+      "followers": [
+        "loans@server1.godswila.guru"
+      ],
+      "userTags": [
+        "#tags@server1.godswila.guru"
+      ],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "abcdef",
+      "bcryptHash": "zV0sCo2.LGuI5Vhrq94nNhPQb9ED0YW",
+      "bcryptRound": 14,
+      "bcryptSalt": "ffZ8.O/8.GTZnONXHe.tye",
       "followers": [],
+      "userTags": [
+        "#tags@server1.godswila.guru"
+      ],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "loans2",
+      "bcryptHash": "qYSU0kmuIxbaPYw08FtoDRwMFxnBUha",
+      "bcryptRound": 14,
+      "bcryptSalt": "0/dXNUFITN2V6DQ0tMpJce",
+      "followers": [
+        "loans@server1.godswila.guru"
+      ],
       "userTags": [],
       "lockoutCounter": 0
     },
     {
-      "login": "tested",
-      "bcryptHash": "wZ2BhIuZROrOkmkQegSgRxhdx5aJY7q",
+      "login": "jfsdkjgdfkghj",
+      "bcryptHash": "7VrNyrr4ylZUrbfGn7EbV.TgATwIo1a",
       "bcryptRound": 14,
-      "bcryptSalt": "68gvLRNUp98U/MQjDHsere",
+      "bcryptSalt": "pwfKGWZViKKauVnCMZX1LO",
       "followers": [],
       "userTags": [],
       "lockoutCounter": 0
@@ -65,10 +78,10 @@
   ],
   "tags": [
     {
-      "tag": "#tendance123",
+      "tag": "#tags@server1.godswila.guru",
       "followers": [
-        "louis@server1.godswila.guru",
-        "lswinnen@server1.godswila.guru"
+        "loans@server1.godswula.guru",
+        "abcdef@server.godswila.guru"
       ]
     }
   ]

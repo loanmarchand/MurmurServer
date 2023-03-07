@@ -1,5 +1,10 @@
 package org.server;
 
+import org.model.Utilisateur;
+
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,16 +14,20 @@ import java.util.List;
 
 public class MurmurServer {
     private static final int DEFAULT_PORT = 22510;
-    private List<ClientRunnable> clientList;
+    private final List<ClientRunnable> clientList;
 
     public MurmurServer(int port) {
         clientList = Collections.synchronizedList(new ArrayList<>());
-        ServerSocket server;
-        Socket client;
+        SSLServerSocket server;
+        SSLSocket client;
         try {
-            server = new ServerSocket(port);
+            //recupere le certificat
+            System.setProperty("javax.net.ssl.keyStore", "src/main/resources/star.godswila.guru.p12");
+            System.setProperty("javax.net.ssl.keyStorePassword", "labo2023");
+            SSLServerSocketFactory serverScocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+            server = (SSLServerSocket) serverScocketFactory.createServerSocket(port);
             while(true) {
-                client= server.accept();
+                client = (SSLSocket) server.accept();
                 ClientRunnable runnable = new ClientRunnable(client, this);
                 clientList.add(runnable);
                 (new Thread(runnable)).start();
@@ -30,11 +39,12 @@ public class MurmurServer {
 
     }
 
-    public void broadcastToAllClientsExceptMe(ClientRunnable me, String message) {
-        System.out.printf("[broadcastAll] Message envoyé : %s\n", message);
-        for(ClientRunnable c : clientList) {
-            if(c != me)
-                c.sendMessage(message);
+    public void broadcastToAllClientsExceptMe(List<Utilisateur> me, String message, ClientRunnable clientRunnable) {
+        //envoyer le message à tous les utilisateurs sauf moi
+        for(ClientRunnable client : clientList) {
+            if(me.contains(client.getUser()) && client != clientRunnable) {
+                client.sendMessage(message);
+            }
         }
 
     }

@@ -18,6 +18,7 @@ public class Protocol {
     public static final String RX_USERNAME = "((" + RX_LETTER_DIGIT +"){5,20})";
     public static final String RX_USER_DOMAIN = "(" + RX_USERNAME + "@" + RX_DOMAIN + ")";
     public static final String RX_MESSAGE = "((" + RX_VISIBLE_CHARACTER + "){1,250})";
+
     public static final String RX_HELLO = "HELLO" + RX_ESP + RX_DOMAIN + RX_ESP + RX_RANDOM + RX_CRLF;
     public static final String RX_PARAM = "PARAM" + RX_ESP + RX_ROUND + RX_ESP + RX_BCRYPT_SALT + RX_CRLF;
     public static final String RX_MSGS = "MSGS" + RX_ESP + RX_USER_DOMAIN + RX_ESP + RX_MESSAGE + RX_CRLF ;
@@ -35,7 +36,6 @@ public class Protocol {
     public static final String PARAM_MSG = "PARAM <round> <bcryptsel>\r\n";
     public static final String RX_CONNECT = "CONNECT" + RX_ESP + RX_USERNAME + RX_CRLF;
     public static final String RX_CONFIRM = "CONFIRM" + RX_ESP + "([0-9a-fA-F]{64}$)" + RX_CRLF;
-    public static final String RX_DISCONNECT = "DISCONNECT";
     public static final String DISCONNECT_MSG = "DISCONNECT\r\n";
     public static final String[] ALL_MESSAGES = {RX_HELLO,RX_PARAM,RX_OK,RX_ERR,RX_MSGS};
     public static final int PARSE_UNKNOW = -1;
@@ -44,6 +44,15 @@ public class Protocol {
     public static final int PARSE_OK = 2;
     public static final int PARSE_ERR = 3;
     public static final int PARSE_MSGS = 4;
+    private static final String RX_TAG = "(#(" + RX_LETTER_DIGIT + "){1,20})";
+    private static final String RX_TAG_DOMAIN = "(^#\\w+@[\\w\\.]+$)";
+    private static final String RX_FOLLOW = "^FOLLOW\\s+(#?\\w+@[\\w\\.]+)$" + RX_CRLF;
+    private static final String RX_MSG = "^MSG\\s+(.*)$" + RX_CRLF;
+    private static final String MSGS = "MSGS <user> <message>\r\n";
+
+    public static String createMessage(String s, String group1) {
+        return MSGS.replace("<user>", s).replace("<message>", group1);
+    }
 
     public String build_confirm(String sha3hex){
         return CONFIRM_MSG.replace("<sha3hexstring>",sha3hex);
@@ -113,5 +122,25 @@ public class Protocol {
     public String getRxConfirm(){return RX_CONFIRM;}
 
     public String getRxHello(){return RX_HELLO;}
+
+    public String getRxFollow() {
+        return RX_FOLLOW;
+    }
+
+    public String getRxUserDomain() {
+        return RX_USER_DOMAIN;
+    }
+
+    public String getRxTagDomain() {
+        return RX_TAG_DOMAIN;
+    }
+
+    public boolean matchesWithServDomain(String group, String currentDomain) {
+        return group.split("@")[1].equals(currentDomain);
+    }
+
+    public String getRxMessage() {
+        return RX_MSG;
+    }
     public String getRxDisconnect(){return RX_DISCONNECT;}
 }
