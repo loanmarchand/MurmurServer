@@ -5,7 +5,7 @@
   "multicastPort": 22510,
   "unicastPort": 22510,
   "relayPort": 22510,
-  "networkInterface": "eth12",
+  "networkInterface": "192.168.133.25",
   "base64AES": "",
   "tls": true,
   "users": [
