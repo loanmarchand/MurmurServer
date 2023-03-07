@@ -34,7 +34,7 @@ public class Protocol {
     public static final String CONNECT_MSG = "CONNECT <username>\r\n";
     public static final String PARAM_MSG = "PARAM <round> <bcryptsel>\r\n";
     public static final String RX_CONNECT = "CONNECT" + RX_ESP + RX_USERNAME + RX_CRLF;
-    public static final String RX_CONFIRM = "CONFIRM" + RX_ESP + RX_USERNAME + RX_CRLF;
+    public static final String RX_CONFIRM = "CONFIRM" + RX_ESP + "([0-9a-fA-F]{64}$)" + RX_CRLF;
     public static final String DISCONNECT_MSG = "DISCONNECT\r\n";
     public static final String[] ALL_MESSAGES = {RX_HELLO,RX_PARAM,RX_OK,RX_ERR,RX_MSGS};
     public static final int PARSE_UNKNOW = -1;
@@ -114,4 +114,6 @@ public class Protocol {
     }
 
     public String getRxConfirm(){return RX_CONFIRM;}
+
+    public String getRxHello(){return RX_HELLO;}
 }

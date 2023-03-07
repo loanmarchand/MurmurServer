@@ -6,6 +6,7 @@ import org.model.Protocol;
 import org.model.Utilisateur;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -44,16 +45,22 @@ public class ClientRunnable implements Runnable {
             String clientAddress = monClient.getInetAddress().getHostAddress();
             String helloMsg = protocol.build_hello_message(clientAddress);
 
-            // divise le helloMsg et l'envoie, récupère les 22 caractères aléatoires et les stock dans randomCaract
-            //TODO : Modifier comment je récupère le string de la regex
-            String[] random = helloMsg.split(" ");
+            //Envoie le message de bienvenue (connexion entre app)
+            System.out.println(helloMsg);
             sendMessage(helloMsg);
-            this.randomCaract = random[2];
 
+            //Récupère les caractères aléatoire du message HELLO et les stocke dans randomCaract
+            Pattern patternH = Pattern.compile(protocol.getRxHello());
+            Matcher matcherH = patternH.matcher(helloMsg);
+            if (matcherH.find()) {
+                this.randomCaract = matcherH.group(3);
+            }
 
+            //Récupère l'action de base du client
             String ligne = in.readLine();
             System.out.printf("Ligne reçue : %s\r\n", ligne);
-            System.out.println("Regex : " + protocol.getRxRegister());
+
+            //Tant que le client est connecté et qu'il envoie des informations :
             while(isConnected && ligne != null) {
                 if (ligne.matches(protocol.getRxRegister())){
                     System.out.println("Register");
@@ -100,8 +107,6 @@ public class ClientRunnable implements Runnable {
                         sendMessage("-ERR\r\n");
                     }
                 }
-
-                //TODO : CHANGER COMMENT GET HELLO CARACT STRING
                 //TODO : CONNECTUSER
 
 
@@ -135,8 +140,15 @@ public class ClientRunnable implements Runnable {
             //Calcule le sha3 sur base des 22 caractères du message HELLO, et de la chaineHashBcrypt
             try{
                 MessageDigest messDigest = MessageDigest.getInstance("SHA3-256");
-                byte[] digest = messDigest.digest((this.randomCaract+user.getBcryptHash()).getBytes());
-                shaCalculated = new String(digest);
+                byte[] digest = messDigest.digest((this.randomCaract+"$2b$"+user.getBcryptRound()+"$"+user.getBcryptSalt()+user.getBcryptHash()).getBytes());
+                BigInteger bigInt = new BigInteger(1, digest);
+                shaCalculated = bigInt.toString(16);
+                // pad with leading zeros for a length of 64
+                while (shaCalculated.length() < 64) {
+                    shaCalculated = "0" + shaCalculated;
+                }
+                //Calcule le SHA256 mais ne le sort pas en hexadigit
+                //shaCalculated = new String(digest);
             }catch (Exception e){
                 System.out.println("Erreur dans le sha3-256");
             }
