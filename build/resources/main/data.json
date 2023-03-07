@@ -1,0 +1,78 @@
+{
+  "currentDomain": "server1.godswila.guru",
+  "saltSizeInBytes": 16,
+  "multicastAddress": "224.1.1.255",
+  "multicastPort": 23845,
+  "unicastPort": 23846,
+  "relayPort": 23847,
+  "networkInterface": "eth12",
+  "base64AES": "P3FXqAUgfhy5cTjYdWlPQBJ/d6fdpbR88YsDPWPbo14\u003d",
+  "tls": true,
+  "users": [
+    {
+      "login": "lswinnen",
+      "bcryptHash": "tDtRfkGpCO5kuMqsPrda5RWRd3/j0Va",
+      "bcryptRound": 14,
+      "bcryptSalt": "cD2UrFc62QNG5d5ogBQXTO",
+      "followers": [
+        "louis@server1.godswila.guru",
+        "swilabus@server2.godswila.guru"
+      ],
+      "userTags": [
+        "#tendance123@server1.godswila.guru"
+      ],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "louis",
+      "bcryptHash": "p9EhYRnBripLCKGieLHXicOSU35jqUS",
+      "bcryptRound": 14,
+      "bcryptSalt": "Xy7qayjAB0YTIXTzdEUV2u",
+      "followers": [],
+      "userTags": [
+        "#tendance123@server1.godswila.guru",
+        "#tendance456@server2.godswila.guru"
+      ],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "romain",
+      "bcryptHash": "p9EhYRnBripLCKGieLHXicOSU35jqUS",
+      "bcryptRound": 14,
+      "bcryptSalt": "Xy7qayjAB0YTIXTzdEUV2u",
+      "followers": [
+        "jeans@serv1.godwsilla.guru"
+      ],
+      "userTags": [
+        "#tendance123@server1.godswila.guru",
+        "#tendance456@server2.godswila.guru",
+        "#tendances2@serv1.godwsilla.guru",
+        "#tendances2@serv1.godwsilla.guru",
+        "#tendances2@serv1.godwsilla.guru",
+        "#tendances2@serv1.godwsilla.guru"
+      ],
+      "lockoutCounter": 0
+    }
+  ],
+  "tags": [
+    {
+      "tag": "#tendance123",
+      "followers": [
+        "louis@server1.godswila.guru",
+        "lswinnen@server1.godswila.guru"
+      ]
+    },
+    {
+      "tag": "#tendances2@serv1.godwsilla.guru",
+      "followers": [
+        "romain@server1.godswila.guru"
+      ]
+    },
+    {
+      "tag": "#tendances2@serv1.godwsilla.guru",
+      "followers": [
+        "romain@server1.godswila.guru"
+      ]
+    }
+  ]
+}
