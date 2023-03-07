@@ -36,21 +36,21 @@
       "lockoutCounter": 0
     },
     {
-      "login": "abcdef",
-      "bcryptHash": "GO.GAmqoZ8zJ2Mjo8/uBQc0I6LS3ZDq",
+      "login": "romain",
+      "bcryptHash": "p9EhYRnBripLCKGieLHXicOSU35jqUS",
       "bcryptRound": 14,
-      "bcryptSalt": "5AbXqnejqpVNZYKM.ABl3.",
-      "followers": [],
-      "userTags": [],
-      "lockoutCounter": 0
-    },
-    {
-      "login": "tested",
-      "bcryptHash": "wZ2BhIuZROrOkmkQegSgRxhdx5aJY7q",
-      "bcryptRound": 14,
-      "bcryptSalt": "68gvLRNUp98U/MQjDHsere",
-      "followers": [],
-      "userTags": [],
+      "bcryptSalt": "Xy7qayjAB0YTIXTzdEUV2u",
+      "followers": [
+        "jeans@serv1.godwsilla.guru"
+      ],
+      "userTags": [
+        "#tendance123@server1.godswila.guru",
+        "#tendance456@server2.godswila.guru",
+        "#tendances2@serv1.godwsilla.guru",
+        "#tendances2@serv1.godwsilla.guru",
+        "#tendances2@serv1.godwsilla.guru",
+        "#tendances2@serv1.godwsilla.guru"
+      ],
       "lockoutCounter": 0
     }
   ],
@@ -60,6 +60,18 @@
       "followers": [
         "louis@server1.godswila.guru",
         "lswinnen@server1.godswila.guru"
+      ]
+    },
+    {
+      "tag": "#tendances2@serv1.godwsilla.guru",
+      "followers": [
+        "romain@server1.godswila.guru"
+      ]
+    },
+    {
+      "tag": "#tendances2@serv1.godwsilla.guru",
+      "followers": [
+        "romain@server1.godswila.guru"
       ]
     }
   ]
