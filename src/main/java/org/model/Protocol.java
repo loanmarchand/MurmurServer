@@ -44,8 +44,8 @@ public class Protocol {
     public static final int PARSE_ERR = 3;
     public static final int PARSE_MSGS = 4;
     private static final String RX_TAG = "(#(" + RX_LETTER_DIGIT + "){1,20})";
-    private static final String RX_TAG_DOMAIN = "(" + RX_TAG + "@" + RX_DOMAIN + ")";
-    private static final String RX_FOLLOW = "FOLLOW"+ RX_ESP + "(" + RX_USER_DOMAIN + "|" + RX_TAG_DOMAIN + ")" + RX_CRLF;
+    private static final String RX_TAG_DOMAIN = "(^#\\w+@[\\w\\.]+$)";
+    private static final String RX_FOLLOW = "^FOLLOW\\s+(#?\\w+@[\\w\\.]+)$" + RX_CRLF;
 
     public String build_confirm(String sha3hex){
         return CONFIRM_MSG.replace("<sha3hexstring>",sha3hex);
@@ -130,5 +130,9 @@ public class Protocol {
 
     public String getRxTagDomain() {
         return RX_TAG_DOMAIN;
+    }
+
+    public boolean matchesWithServDomain(String group, String currentDomain) {
+        return group.split("@")[1].equals(currentDomain);
     }
 }

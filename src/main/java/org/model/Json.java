@@ -129,7 +129,16 @@ public class Json {
 
     public static ApplicationData getApplicationData() {
         Gson gson = new Gson();
-        List<Utilisateur> users = new ArrayList<>();
+        //Vérifie si le dossier existe
+        File dir = new File("src/main/resources");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        //Vérifier si le fichier existe
+        File file = new File(URL_JSON);
+        if (!file.exists()) {
+            sauvegarder(extracted());
+        }
 
         try (Reader reader = new FileReader(URL_JSON)) {
             ApplicationData data = gson.fromJson(reader, ApplicationData.class);
@@ -139,5 +148,21 @@ public class Json {
         }
 
         return null;
+    }
+
+    private static ApplicationData extracted() {
+        Gson gson = new Gson();
+        ApplicationData data = new ApplicationData();
+        try (Reader reader = new FileReader("src/main/resources/config.json")) {
+            data = gson.fromJson(reader, ApplicationData.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        List<Utilisateur> users = new ArrayList<>();
+        data.setUsers(users);
+        List<Tag> tags = new ArrayList<>();
+        data.setTags(tags);
+        return data;
     }
 }

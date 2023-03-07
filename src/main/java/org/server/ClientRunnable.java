@@ -61,6 +61,7 @@ public class ClientRunnable implements Runnable {
 
             //Tant que le client est connecté et qu'il envoie des informations :
             while(isConnected && ligne != null) {
+                //Enregistrement d'un utilisateur
                 if (ligne.matches(protocol.getRxRegister())){
                     System.out.println("Register");
 
@@ -74,13 +75,14 @@ public class ClientRunnable implements Runnable {
                         String rx_hash = matcher.group(9);
                         int rx_round = Integer.parseInt(matcher.group(6));
                         String salt = matcher.group(7);
-                        Utilisateur user = new Utilisateur(rx_username, rx_hash, rx_round, salt, new ArrayList<String>(), new ArrayList<String>(), 0);
+                        user = new Utilisateur(rx_username, rx_hash, rx_round, salt, new ArrayList<String>(), new ArrayList<String>(), 0);
                         applicationData.addUser(user);
                         Json.sauvegarder(applicationData);
                     }
 
                     sendMessage("+OK\r\n");
                 }
+                //Connexion d'un utilisateur
                 if(ligne.matches(protocol.getRxConnect())){
                     String name=null;
                     System.out.println("Connect");
@@ -93,7 +95,9 @@ public class ClientRunnable implements Runnable {
                     }
                     connectUser(name);
 
-                }if(ligne.matches(protocol.getRxConfirm())){
+                }
+                //Confirmation de connexion
+                if(ligne.matches(protocol.getRxConfirm())){
                     String shaRecieved=null;
                     Pattern pattern = Pattern.compile(protocol.getRxConfirm());
                     Matcher matcher = pattern.matcher(ligne);
@@ -106,69 +110,64 @@ public class ClientRunnable implements Runnable {
                         sendMessage("-ERR\r\n");
                     }
                 }
-                //TODO : CONNECTUSER
+                //Gestion des follows
+                if (ligne.matches(protocol.getRxFollow())){
+                    Pattern pattern = Pattern.compile(protocol.getRxFollow());
+                    Matcher matcher = pattern.matcher(ligne);
+                    if (matcher.find()){
+                        String group = matcher.group(1);
+                        System.out.println(group);
+                        if (group.matches(protocol.getRxUserDomain())){
+                            List<String> followers = applicationData.getUser(user.getLogin()).getFollowers();
+                            //vérifier si la liste contient déjà le follow
+                            if (followers.contains(group)){
+                                System.out.println("Vous suivez déjà cet utilisateur");
+                            }
+                            else {
+                                followers.add(group);
+                                applicationData.getUser(user.getLogin()).setFollowers(followers);
+                                //affiche les variables de appData
+                                System.out.println(applicationData.getUser(user.getLogin()).getFollowers());
+                            }
 
 
-                //TODO : vérifier que le sel et le hash sont corrects si oui envoyer +OK sinon -ERR
+                        }
+                        if (group.matches(protocol.getRxTagDomain())){
+                            System.out.println("test");
+                            List<String> tags = applicationData.getUser(user.getLogin()).getUserTags();
+                            tags.add(group);
+                            applicationData.getUser(user.getLogin()).setUserTags(tags);
+                            List<Tag> tagList = applicationData.getTags();
+                            int i = 0;
+                            for (Tag tag : tagList){
+                                if (tag.getTag().equals(group)){
+                                    List<String> users = tag.getFollowers();
+                                    users.add(user.getLogin()+"@"+applicationData.getCurrentDomain());
+                                    tag.setFollowers(users);
+                                    i++;
+                                }
+                            }
+                            if (i == 0 && protocol.matchesWithServDomain(group, applicationData.getCurrentDomain())){
+                                Tag newTag = new Tag(group, List.of(user.getLogin()+"@"+applicationData.getCurrentDomain()));
+                                tagList.add(newTag);
+                            }
+                            else {
+                                //TODO : envoyer au relais
+                            }
+                        }
+                        Json.sauvegarder(applicationData);
+                    }
+                }
+
 
 
 
                 ligne = in.readLine();
+                System.out.printf("Ligne reçue : %s\r\n", ligne);
             }
         } catch(IOException ex) { ex.printStackTrace(); }
     }
 
-
-    public static void main(String[] args) {
-        String ligne = "FOLLOW jeans@serv1.godwsilla.guru";
-        Protocol protocol = new Protocol();
-        ApplicationData appData = Json.getApplicationData();
-        String login = "romain";
-
-        if (ligne.matches(protocol.getRxFollow())){
-            Pattern pattern = Pattern.compile(protocol.getRxFollow());
-            Matcher matcher = pattern.matcher(ligne);
-            if (matcher.find()){
-                String group = matcher.group(1);
-                System.out.println(group);
-                if (group.matches(protocol.getRxUserDomain())){
-                    List<String> followers = appData.getUser(login).getFollowers();
-                    //vérifier si la liste contient déjà le follow
-                    if (followers.contains(group)){
-                        System.out.println("Vous suivez déjà cet utilisateur");
-                    }
-                    else {
-                        followers.add(group);
-                        appData.getUser(login).setFollowers(followers);
-                        //affiche les variables de appData
-                        System.out.println(appData.getUser(login).getFollowers());
-                    }
-
-
-                }
-                if (group.equals(protocol.getRxTagDomain())){
-                    List<String> tags = appData.getUser(login).getUserTags();
-                    tags.add(group);
-                    appData.getUser(login).setUserTags(tags);
-                    List<Tag> tagList = appData.getTags();
-                    int i = 0;
-                    for (Tag tag : tagList){
-                        if (tag.getTag().equals(group)){
-                            List<String> users = tag.getFollowers();
-                            users.add(login);
-                            tag.setFollowers(users);
-                            i++;
-                        }
-                    }
-                    if (i == 0){
-                        Tag newTag = new Tag(group, List.of(login));
-                        tagList.add(newTag);
-                    }
-                }
-                Json.sauvegarder(appData);
-            }
-        }
-    }
 
     /**
      * Récupère et stocke l'utilisateur qui tente de se connecter, lui envoie les informations pour calculer le hash
