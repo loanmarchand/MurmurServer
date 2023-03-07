@@ -20,7 +20,7 @@ public class ClientRunnable implements Runnable {
     private PrintWriter out;
     private boolean isConnected = false;
     private final MurmurServer controller;
-    private Protocol protocol;
+    private final Protocol protocol;
     private String randomCaract;
     private ApplicationData applicationData;
     private String shaCalculated;
@@ -106,6 +106,7 @@ public class ClientRunnable implements Runnable {
                     if (matcher.find()) {
                         shaRecieved = matcher.group(1);
                     }
+                    assert shaRecieved != null;
                     if(shaRecieved.equals(shaCalculated)){
                         sendMessage("+OK\r\n");
                     }else{
