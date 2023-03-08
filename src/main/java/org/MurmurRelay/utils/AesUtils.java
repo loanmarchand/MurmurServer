@@ -7,59 +7,51 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class AesUtils {
-    public  final int AES_KEY_SIZE = 256;
-    public  final int GCM_IV_LENGTH = 12;
-    public static final int GCM_TAG_LENGTH = 16;
-    private  final SecureRandom random;
 
-    private  final byte[] IV ;
+    private static final int TAG_LENGTH = 128;
+    private static final int IV_LENGTH = 12;
 
-    public AesUtils() {
-        random = new SecureRandom();
-        IV = new byte[GCM_IV_LENGTH];
-        random.nextBytes(IV);
+    public  byte[] encrypt(String plainText, SecretKey secretKey) throws Exception {
+        SecureRandom random = new SecureRandom();
+        byte[] iv = new byte[IV_LENGTH];
+        random.nextBytes(iv);
+
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        GCMParameterSpec parameterSpec = new GCMParameterSpec(TAG_LENGTH, iv);
+
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, parameterSpec);
+
+        byte[] plainTextBytes = plainText.getBytes(StandardCharsets.UTF_8);
+        byte[] cipherText = cipher.doFinal(plainTextBytes);
+
+        byte[] cipherTextWithIv = new byte[IV_LENGTH + cipherText.length];
+        System.arraycopy(iv, 0, cipherTextWithIv, 0, IV_LENGTH);
+        System.arraycopy(cipherText, 0, cipherTextWithIv, IV_LENGTH, cipherText.length);
+
+        return cipherTextWithIv;
     }
 
-    public byte[] encrypt(byte[] plaintext, SecretKey key) throws Exception
-    {
-        // Get Cipher Instance
+    public  String decrypt(byte[] cipherTextWithIv, SecretKey secretKey) throws Exception {
+        byte[] iv = new byte[IV_LENGTH];
+        System.arraycopy(cipherTextWithIv, 0, iv, 0, IV_LENGTH);
+
+        byte[] cipherText = new byte[cipherTextWithIv.length - IV_LENGTH];
+        System.arraycopy(cipherTextWithIv, IV_LENGTH, cipherText, 0, cipherText.length);
+
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        GCMParameterSpec parameterSpec = new GCMParameterSpec(TAG_LENGTH, iv);
 
-        // Create SecretKeySpec
-        SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, parameterSpec);
 
-        // Create GCMParameterSpec
-        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, IV);
+        byte[] plainTextBytes = cipher.doFinal(cipherText);
 
-        // Initialize Cipher for ENCRYPT_MODE
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
-
-        // Perform Encryption
-
-        return cipher.doFinal(plaintext);
-    }
-
-    public String decrypt(byte[] cipherText, SecretKey key) throws Exception
-    {
-        // Get Cipher Instance
-        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-
-        // Create SecretKeySpec
-        SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
-
-        // Create GCMParameterSpec
-        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, IV);
-
-        // Initialize Cipher for DECRYPT_MODE
-        cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
-
-        // Perform Decryption
-        byte[] decryptedText = cipher.doFinal(cipherText);
-
-        return new String(decryptedText);
+        return new String(plainTextBytes, StandardCharsets.UTF_8);
     }
 
     public SecretKey generateKey() throws NoSuchAlgorithmException {

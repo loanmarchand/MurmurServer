@@ -6,7 +6,7 @@
   "unicastPort": 22510,
   "relayPort": 22510,
   "networkInterface": "eth12",
-  "base64AES": "DWXFPYods+h16k2NcDMB3VAoJP2D3cfc3CNVCx+d36g\u003d",
+  "base64AES": "csWIKUGIc2tT2na77/gVKeRp0pY78YrzEFymeD2mBuM\u003d",
   "tls": true,
   "users": [
     {

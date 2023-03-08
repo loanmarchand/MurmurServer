@@ -66,12 +66,12 @@ public class MurmurServer {
                     Json.sauvegarder(applicationData);
                 }
                 //Chiffrement du message
-                buffer = aesUtils.encrypt(message.getBytes(), aesUtils.decodeKey(applicationData.getBase64AES()));
+                //buffer = aesUtils.encrypt(message, aesUtils.decodeKey(applicationData.getBase64AES()));
                 packet.setData(buffer);
                 socket.send(packet);
                 //Decryption du message
-                String decrypted = aesUtils.decrypt(buffer, aesUtils.decodeKey(applicationData.getBase64AES()));
-                System.out.println("Decrypted: " + new String(decrypted));
+                //String decrypted = aesUtils.decrypt(buffer, aesUtils.decodeKey(applicationData.getBase64AES()));
+                System.out.println("Decrypted: " + message);
             } catch (Exception e) {
                 e.printStackTrace();
             }

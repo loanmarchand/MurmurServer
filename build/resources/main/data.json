@@ -6,7 +6,7 @@
   "unicastPort": 22510,
   "relayPort": 22510,
   "networkInterface": "eth12",
-  "base64AES": "DWXFPYods+h16k2NcDMB3VAoJP2D3cfc3CNVCx+d36g\u003d",
+  "base64AES": "csWIKUGIc2tT2na77/gVKeRp0pY78YrzEFymeD2mBuM\u003d",
   "tls": true,
   "users": [
     {
@@ -62,15 +62,6 @@
       "bcryptHash": "7VrNyrr4ylZUrbfGn7EbV.TgATwIo1a",
       "bcryptRound": 14,
       "bcryptSalt": "pwfKGWZViKKauVnCMZX1LO",
-      "followers": [],
-      "userTags": [],
-      "lockoutCounter": 0
-    },
-    {
-      "login": "loans",
-      "bcryptHash": "JPB8C/mU3evH1Fsn49/8/rJvdQtTXgu",
-      "bcryptRound": 14,
-      "bcryptSalt": "Sx9cgmNWBIXBY2HEtEGxZ.",
       "followers": [],
       "userTags": [],
       "lockoutCounter": 0
