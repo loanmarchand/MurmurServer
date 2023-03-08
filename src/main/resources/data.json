@@ -65,6 +65,24 @@
       "followers": [],
       "userTags": [],
       "lockoutCounter": 0
+    },
+    {
+      "login": "abcdef",
+      "bcryptHash": "olsA01ovXTEKOr7ZDlJKMYx/Ixc.A1W",
+      "bcryptRound": 14,
+      "bcryptSalt": "U2VMgt/fwRPdHRTViyFZ9O",
+      "followers": [],
+      "userTags": [],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "loans3",
+      "bcryptHash": "D52T80SkjZYa5OKwDd6pIeVq8HlNxmG",
+      "bcryptRound": 14,
+      "bcryptSalt": "aLUpRVcJNRiCU4IX2VPfsO",
+      "followers": [],
+      "userTags": [],
+      "lockoutCounter": 0
     }
   ],
   "tags": [
