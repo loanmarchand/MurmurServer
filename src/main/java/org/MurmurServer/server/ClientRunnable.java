@@ -43,7 +43,7 @@ public class ClientRunnable implements Runnable {
     public void run() {
         try {
             //Récuperer l'adresse du client et construis le message hello aléatoire
-            String clientAddress = monClient.getInetAddress().getHostAddress();
+            String clientAddress = applicationData.getCurrentDomain();
             String helloMsg = protocol.build_hello_message(clientAddress);
 
             //Envoie le message de bienvenue (connexion entre app)

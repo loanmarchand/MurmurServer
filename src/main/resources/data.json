@@ -14,7 +14,9 @@
       "bcryptHash": "MC6L2I.TsuiF1wi6il0sEcLME7.BKUu",
       "bcryptRound": 14,
       "bcryptSalt": "GoolfIlpDOimfZ.7oQIrQ.",
-      "followers": [],
+      "followers": [
+        "loans3@server1.godswila.guru"
+      ],
       "userTags": [
         "#tags@server1.godswila.guru",
         "#teshd@sjfhj.Sgjdhg.SDd",
@@ -62,6 +64,44 @@
       "bcryptHash": "7VrNyrr4ylZUrbfGn7EbV.TgATwIo1a",
       "bcryptRound": 14,
       "bcryptSalt": "pwfKGWZViKKauVnCMZX1LO",
+      "followers": [],
+      "userTags": [],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "abcdefg",
+      "bcryptHash": "rKxzU80enPqUhvCW/RcsNxAU89.cUt6",
+      "bcryptRound": 14,
+      "bcryptSalt": "jhVszPZqcPSG0ZE1Ms6mpO",
+      "followers": [],
+      "userTags": [],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "loans3",
+      "bcryptHash": ".tevqnUpiE0TBVA0o6Muv.P5ngonSCq",
+      "bcryptRound": 14,
+      "bcryptSalt": "0Zai4NywGyh4Z.L5phsFh.",
+      "followers": [
+        "loans@server1.godswila.guru"
+      ],
+      "userTags": [],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "romain",
+      "bcryptHash": "kFok4eBgWwiErK640Hiyhjg5Woqx8wu",
+      "bcryptRound": 14,
+      "bcryptSalt": "zsR8M9TNBQR13h/h061AFu",
+      "followers": [],
+      "userTags": [],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "romain2",
+      "bcryptHash": "M45wkXKg2rqPZzix1O9XZYFtgisVvVa",
+      "bcryptRound": 14,
+      "bcryptSalt": "KB8DEnTNf88nsGDwtT3mZO",
       "followers": [],
       "userTags": [],
       "lockoutCounter": 0

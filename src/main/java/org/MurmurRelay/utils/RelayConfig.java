@@ -63,4 +63,12 @@ public class RelayConfig {
     public String[] getKeys() {
         return aesToServerMap.keySet().toArray(new String[0]);
     }
+
+    public String getDomains() {
+        StringBuilder domains = new StringBuilder();
+        for (String key : aesToServerMap.keySet()) {
+            domains.append(key).append(" ");
+        }
+        return domains.toString();
+    }
 }

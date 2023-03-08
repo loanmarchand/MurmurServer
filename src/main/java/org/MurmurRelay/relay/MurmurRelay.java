@@ -1,32 +1,32 @@
 package org.MurmurRelay.relay;
 
-import org.MurmurRelay.utils.AesUtils;
 import org.MurmurRelay.utils.RelayConfig;
-import org.MurmurServer.model.ApplicationData;
+import org.MurmurServer.model.Protocol;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MurmurRelay {
 
-    private static final int DEFAULT_PORT = 22510;
+    private static final int DEFAULT_PORT = 23505;
 
     private MulticastSocket socket;
 
-    private AesUtils aesUtils;
-    private RelayConfig relayConfig;
+    private final RelayConfig relayConfig;
+    private final Protocol protocol;
 
 
     public MurmurRelay(int port) {
-        aesUtils = new AesUtils();
+        protocol = new Protocol();
         relayConfig = new RelayConfig("src/main/resources/relayConfig.json");
 
         try {
             // On crée un socket multicast
             socket = new MulticastSocket(port);
-
             // On rejoint le groupe de diffusion multicast
             InetAddress group = InetAddress.getByName("224.1.1.255");
             socket.joinGroup(group);
@@ -37,9 +37,8 @@ public class MurmurRelay {
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                 socket.receive(packet);
                 String message = new String(packet.getData(), 0, packet.getLength());
-                String decryptedMessage = decryptMessage(message);
-
-                System.out.println("Message reçu : " + decryptedMessage);
+                String domain = getDomain(message);
+                System.out.println("Message reçu : " + domain);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,17 +51,19 @@ public class MurmurRelay {
         }
     }
 
-    private String decryptMessage(String message) throws Exception {
-        for (String key : relayConfig.getKeys()) {
-            try {
-                System.out.println("Tentative de décryptage avec la clé " + key);
-                return aesUtils.decrypt(message.getBytes(), aesUtils.decodeKey(key));
-            } catch (Exception e) {
-                // La clé ne correspond pas, on passe à la suivante
-            }
+    private String getDomain(String message) throws Exception {
+            //Decoupe le message en 2 parties
+            Pattern pattern = Pattern.compile(protocol.geRxEcho());
+            Matcher matcher = pattern.matcher(message);
+            if (matcher.find()){
+                String goodMessage = matcher.group(1);
+                //Tester si le messaga est un domain compris dans la liste
+                if (relayConfig.getDomains().contains(goodMessage)){
+                    //Si oui, on decrypte le message
+                    return goodMessage;
+                }
         }
-        // Si aucune clé ne correspond, on lève une exception
-        throw new Exception("Impossible de décrypter le message, aucune clé AES valide n'a été trouvée");
+        return null;
     }
 
     public static void main(String[] args) {

@@ -50,9 +50,20 @@ public class Protocol {
     private static final String RX_FOLLOW = "^FOLLOW\\s+(#?\\w+@[\\w\\.]+)$" + RX_CRLF;
     private static final String RX_MSG = "^MSG\\s+(.*)$" + RX_CRLF;
     private static final String MSGS = "MSGS <user> <message>\r\n";
+    private static final String RX_PORT = "(\\d{1,5})";
+    private static final String RX_ECHO = "ECHO" + RX_ESP + RX_DOMAIN + RX_PORT + RX_CRLF;
+    public static final String ECHO_MSG = "ECHO <domain> <port>\r\n";
 
-    public static String createMessage(String s, String group1) {
-        return MSGS.replace("<user>", s).replace("<message>", group1);
+
+    /**
+     * Créer un message en remplacent les champs <user> et <message> par les valeurs passées en paramètres.
+     *
+     * @param utilisateur
+     * @param message
+     * @return
+     */
+    public static String createMessage(String utilisateur, String message) {
+        return MSGS.replace("<user>", utilisateur).replace("<message>", message);
     }
 
     public String build_confirm(String sha3hex){
@@ -144,4 +155,8 @@ public class Protocol {
         return RX_MSG;
     }
     public String getRxDisconnect(){return RX_DISCONNECT;}
+
+    public String geRxEcho() {
+        return RX_ECHO;
+    }
 }

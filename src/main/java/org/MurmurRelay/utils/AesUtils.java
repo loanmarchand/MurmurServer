@@ -17,7 +17,7 @@ public class AesUtils {
     private static final int TAG_LENGTH = 128;
     private static final int IV_LENGTH = 12;
 
-    public  byte[] encrypt(String plainText, SecretKey secretKey) throws Exception {
+    public  String encrypt(String plainText, SecretKey secretKey) throws Exception {
         SecureRandom random = new SecureRandom();
         byte[] iv = new byte[IV_LENGTH];
         random.nextBytes(iv);
@@ -34,7 +34,7 @@ public class AesUtils {
         System.arraycopy(iv, 0, cipherTextWithIv, 0, IV_LENGTH);
         System.arraycopy(cipherText, 0, cipherTextWithIv, IV_LENGTH, cipherText.length);
 
-        return cipherTextWithIv;
+        return Base64.getEncoder().encodeToString(cipherTextWithIv);
     }
 
     public  String decrypt(byte[] cipherTextWithIv, SecretKey secretKey) throws Exception {
