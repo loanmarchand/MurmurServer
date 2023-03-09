@@ -6,145 +6,104 @@ import com.google.gson.JsonIOException;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Cette classe permet de sauvegarder et de charger les données de l'application en manipulant un objet ApplicationData.
+ * et en utilisant la librairie Gson.
+ */
 public class Json {
+    public static final String URL_CONFIG = "src/main/resources/config.json";
+    private final String URL_JSON = "src/main/resources/data.json";
 
-    private static final String URL_JSON = "src/main/resources/data.json";
-
-    public static void main(String[] args) {
-        ApplicationData data = new ApplicationData();
-        data.setCurrentDomain("server1.godswila.guru");
-        data.setSaltSizeInBytes(16);
-        data.setMulticastAddress("224.1.1.255");
-        data.setMulticastPort(23845);
-        data.setUnicastPort(23846);
-        data.setRelayPort(23847);
-        data.setNetworkInterface("eth12");
-        data.setBase64AES("P3FXqAUgfhy5cTjYdWlPQBJ/d6fdpbR88YsDPWPbo14=");
-        data.setTls(true);
-
-        List<Utilisateur> users = new ArrayList<>();
-        Utilisateur user1 = new Utilisateur();
-        user1.setLogin("lswinnen");
-        user1.setBcryptHash("tDtRfkGpCO5kuMqsPrda5RWRd3/j0Va");
-        user1.setBcryptRound(14);
-        user1.setBcryptSalt("cD2UrFc62QNG5d5ogBQXTO");
-        List<String> followers1 = new ArrayList<>();
-        followers1.add("louis@server1.godswila.guru");
-        followers1.add("swilabus@server2.godswila.guru");
-        user1.setFollowers(followers1);
-        List<String> userTags1 = new ArrayList<>();
-        userTags1.add("#tendance123@server1.godswila.guru");
-        user1.setUserTags(userTags1);
-        user1.setLockoutCounter(0);
-        users.add(user1);
-
-        Utilisateur user2 = new Utilisateur();
-        user2.setLogin("louis");
-        user2.setBcryptHash("p9EhYRnBripLCKGieLHXicOSU35jqUS");
-        user2.setBcryptRound(14);
-        user2.setBcryptSalt("Xy7qayjAB0YTIXTzdEUV2u");
-        List<String> user = new ArrayList<>();
-        List<String> followers2 = new ArrayList<>();
-        List<String> userTags2 = new ArrayList<>();
-        userTags2.add("#tendance123@server1.godswila.guru");
-        userTags2.add("#tendance456@server2.godswila.guru");
-        user2.setFollowers(followers2);
-        user2.setUserTags(userTags2);
-        user2.setLockoutCounter(0);
-        users.add(user2);
-
-        data.setUsers(users);
-
-        List<Tag> tags = new ArrayList<>();
-        Tag tag1 = new Tag();
-        tag1.setTag("#tendance123");
-        List<String> followers3 = new ArrayList<>();
-        followers3.add("louis@server1.godswila.guru");
-        followers3.add("lswinnen@server1.godswila.guru");
-        tag1.setFollowers(followers3);
-        tags.add(tag1);
-
-        data.setTags(tags);
-
-        String path = "src/main/java/org/model/test.json";
-        sauvegarder(data);
-        List<Utilisateur> listeUser = getListeUser();
-
-        System.out.println("Voici le pseudo de l'utilisateur 1: " + getUser("lswinnen").getLogin());
-    }
-
-    public static void sauvegarder(ApplicationData data) {
+    /**
+     * Sauvegarde les données de l'application dans un fichier JSON.
+     *
+     * @param applicationData : les données de l'application.
+     */
+    public void sauvegarder(ApplicationData applicationData) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         File file = new File(URL_JSON);
 
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        try (FileWriter writer = new FileWriter(URL_JSON)) {
-            gson.toJson(data, writer);
-        } catch (JsonIOException | IOException e) {
-            e.printStackTrace();
+        if (creerFichierSiInexistant(file)) {
+            try (FileWriter writer = new FileWriter(URL_JSON)) {
+                gson.toJson(applicationData, writer);
+            } catch (JsonIOException | IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public static List<Utilisateur> getListeUser() {
-        Gson gson = new Gson();
-        List<Utilisateur> users = new ArrayList<>();
-
-        try (Reader reader = new FileReader(URL_JSON)) {
-            ApplicationData data = gson.fromJson(reader, ApplicationData.class);
-            users = data.getUsers();
-        } catch (IOException e) {
-            e.printStackTrace();
+    /**
+     * Cette méthode va tenter de créer le fichier s'il n'existe pas.
+     *
+     * @param file : le fichier à créer.
+     * @return : true si le fichier a été créé ou si le fichier existe déjà, false sinon.
+     */
+    private boolean creerFichierSiInexistant(File file) {
+        // Tester si file existe
+        if (!file.exists()) {
+            try {
+                if (file.createNewFile()) {
+                    return true;
+                }
+            } catch (IOException e) {
+                return false;
+            }
         }
-
-        return users;
+        return true;
     }
 
-    public static Utilisateur getUser(String login) {
+    /**
+     * Récupérer un objet Utilisateur sur base de son login.
+     *
+     * @param login : le login de l'utilisateur à récupérer.
+     * @return : l'utilisateur ou null si l'utilisateur n'existe pas.
+     */
+    public Utilisateur getUser(String login) {
         Gson gson = new Gson();
         Utilisateur user = new Utilisateur();
 
-        try (Reader reader = new FileReader(URL_JSON)) {
-            ApplicationData data = gson.fromJson(reader, ApplicationData.class);
-            List<Utilisateur> users = data.getUsers();
-            for (Utilisateur u : users) {
-                if (u.getLogin().equals(login)) {
-                    user = u;
+        if (creerFichierSiInexistant(new File(URL_JSON))) {
+            try (Reader reader = new FileReader(URL_JSON)) {
+                ApplicationData data = gson.fromJson(reader, ApplicationData.class);
+                List<Utilisateur> users = data.getUsers();
+                for (Utilisateur u : users) {
+                    if (u.getLogin().equals(login)) {
+                        user = u;
+                    }
                 }
+                return user;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            return user;
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
         return null;
     }
 
-    public static ApplicationData getApplicationData() {
+    /**
+     * Récupérer un objet ApplicationData.
+     *
+     * @return : les données de l'application ou null si le fichier n'existe pas.
+     */
+    public ApplicationData getApplicationData() {
         Gson gson = new Gson();
-        //Vérifie si le dossier existe
-        File dir = new File("src/main/resources");
-        if (!dir.exists()) {
-            dir.mkdir();
+        if (creerFichierSiInexistant(new File(URL_JSON))) {
+            try (Reader reader = new FileReader(URL_JSON)) {
+                return gson.fromJson(reader, ApplicationData.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        //Vérifier si le fichier existe
+
+        // Vérifier si le fichier existe.
         File file = new File(URL_JSON);
         if (!file.exists()) {
-            sauvegarder(extracted());
+            sauvegarder(getApplicationDataVide());
         }
 
         try (Reader reader = new FileReader(URL_JSON)) {
-            ApplicationData data = gson.fromJson(reader, ApplicationData.class);
-            return data;
+            return gson.fromJson(reader, ApplicationData.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -152,10 +111,15 @@ public class Json {
         return null;
     }
 
-    private static ApplicationData extracted() {
+    /**
+     * Renvoie un objet ApplicationData avec des valeurs par défaut.
+     *
+     * @return : les données de l'application
+     */
+    private ApplicationData getApplicationDataVide() {
         Gson gson = new Gson();
         ApplicationData data = new ApplicationData();
-        try (Reader reader = new FileReader("src/main/resources/config.json")) {
+        try (Reader reader = new FileReader(URL_CONFIG)) {
             data = gson.fromJson(reader, ApplicationData.class);
         } catch (IOException e) {
             e.printStackTrace();
@@ -167,6 +131,4 @@ public class Json {
         data.setTags(tags);
         return data;
     }
-
-
 }

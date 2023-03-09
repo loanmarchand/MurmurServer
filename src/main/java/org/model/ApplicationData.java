@@ -2,6 +2,9 @@ package org.model;
 
 import java.util.List;
 
+/**
+ * Cette classe représente les données de l'application. Comprends toutes les données qui devront être sauvegardées.
+ */
 public class ApplicationData {
     private String currentDomain;
     private int saltSizeInBytes;
@@ -15,6 +18,20 @@ public class ApplicationData {
     private List<Utilisateur> users;
     private List<Tag> tags;
 
+    /**
+     * Constructeur de la classe ApplicationData.
+     * @param currentDomain
+     * @param saltSizeInBytes
+     * @param multicastAddress
+     * @param multicastPort
+     * @param unicastPort
+     * @param relayPort
+     * @param networkInterface
+     * @param base64AES
+     * @param tls
+     * @param users
+     * @param tags
+     */
     public ApplicationData(String currentDomain, int saltSizeInBytes, String multicastAddress, int multicastPort,
                            int unicastPort, int relayPort, String networkInterface, String base64AES,
                            boolean tls, List<Utilisateur> users, List<Tag> tags) {
