@@ -1,11 +1,12 @@
-package org.server;
+package org.MurmurServer.server;
 
-import org.model.ApplicationData;
-import org.model.*;
+import org.MurmurServer.model.ApplicationData;
+import org.MurmurServer.model.*;
 
 import java.io.*;
 import java.math.BigInteger;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class ClientRunnable implements Runnable {
     private PrintWriter out;
     private boolean isConnected = false;
     private final MurmurServer controller;
-    private Protocol protocol;
+    private final Protocol protocol;
     private String randomCaract;
     private ApplicationData applicationData;
     private String shaCalculated;
@@ -42,7 +43,7 @@ public class ClientRunnable implements Runnable {
     public void run() {
         try {
             //Récuperer l'adresse du client et construis le message hello aléatoire
-            String clientAddress = monClient.getInetAddress().getHostAddress();
+            String clientAddress = applicationData.getCurrentDomain();
             String helloMsg = protocol.build_hello_message(clientAddress);
 
             //Envoie le message de bienvenue (connexion entre app)
@@ -106,11 +107,14 @@ public class ClientRunnable implements Runnable {
                     if (matcher.find()) {
                         shaRecieved = matcher.group(1);
                     }
+                    assert shaRecieved != null;
                     if(shaRecieved.equals(shaCalculated)){
                         sendMessage("+OK\r\n");
                     }else{
                         sendMessage("-ERR\r\n");
                     }
+                }if (ligne.matches(protocol.getRxDisconnect())) {
+                    sendMessage("+OK\r\n");
                 }
                 //Gestion des follows
                 if (ligne.matches(protocol.getRxFollow())){
@@ -204,7 +208,9 @@ public class ClientRunnable implements Runnable {
                 ligne = in.readLine();
                 System.out.printf("Ligne reçue : %s\r\n", ligne);
             }
-        } catch(IOException ex) { ex.printStackTrace(); }
+        } catch(IOException ex) {
+            System.out.println("Connexion perdue");
+        }
     }
 
 

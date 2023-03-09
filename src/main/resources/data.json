@@ -6,26 +6,113 @@
   "unicastPort": 22510,
   "relayPort": 22510,
   "networkInterface": "eth12",
-  "base64AES": "",
+  "base64AES": "csWIKUGIc2tT2na77/gVKeRp0pY78YrzEFymeD2mBuM\u003d",
   "tls": true,
   "users": [
     {
       "login": "loans",
-      "bcryptHash": "3B7Mo9SS8r0b7Cybvxm6JmPlMoiXCM.",
+      "bcryptHash": "MC6L2I.TsuiF1wi6il0sEcLME7.BKUu",
       "bcryptRound": 14,
-      "bcryptSalt": "rOGiSuViXwuTQhAKNNuc1O",
+      "bcryptSalt": "GoolfIlpDOimfZ.7oQIrQ.",
+      "followers": [
+        "loans3@server1.godswila.guru"
+      ],
+      "userTags": [
+        "#tags@server1.godswila.guru",
+        "#teshd@sjfhj.Sgjdhg.SDd",
+        "#test2@server1.godswila.guru"
+      ],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "abcdef",
+      "bcryptHash": "DhyBdI2YyVCiaQYXrNtZ1bt4UFI4y2i",
+      "bcryptRound": 14,
+      "bcryptSalt": "UfL4kvbNPoqlsU5QnZhdTe",
+      "followers": [
+        "loans@server1.godswila.guru"
+      ],
+      "userTags": [
+        "#tags@server1.godswila.guru"
+      ],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "abcdef",
+      "bcryptHash": "zV0sCo2.LGuI5Vhrq94nNhPQb9ED0YW",
+      "bcryptRound": 14,
+      "bcryptSalt": "ffZ8.O/8.GTZnONXHe.tye",
       "followers": [],
       "userTags": [
-        "#test@server1.godswila.guru"
+        "#tags@server1.godswila.guru"
       ],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "loans2",
+      "bcryptHash": "qYSU0kmuIxbaPYw08FtoDRwMFxnBUha",
+      "bcryptRound": 14,
+      "bcryptSalt": "0/dXNUFITN2V6DQ0tMpJce",
+      "followers": [
+        "loans@server1.godswila.guru"
+      ],
+      "userTags": [],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "jfsdkjgdfkghj",
+      "bcryptHash": "7VrNyrr4ylZUrbfGn7EbV.TgATwIo1a",
+      "bcryptRound": 14,
+      "bcryptSalt": "pwfKGWZViKKauVnCMZX1LO",
+      "followers": [],
+      "userTags": [],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "abcdefg",
+      "bcryptHash": "rKxzU80enPqUhvCW/RcsNxAU89.cUt6",
+      "bcryptRound": 14,
+      "bcryptSalt": "jhVszPZqcPSG0ZE1Ms6mpO",
+      "followers": [],
+      "userTags": [],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "loans3",
+      "bcryptHash": ".tevqnUpiE0TBVA0o6Muv.P5ngonSCq",
+      "bcryptRound": 14,
+      "bcryptSalt": "0Zai4NywGyh4Z.L5phsFh.",
+      "followers": [
+        "loans@server1.godswila.guru"
+      ],
+      "userTags": [],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "romain",
+      "bcryptHash": "kFok4eBgWwiErK640Hiyhjg5Woqx8wu",
+      "bcryptRound": 14,
+      "bcryptSalt": "zsR8M9TNBQR13h/h061AFu",
+      "followers": [],
+      "userTags": [],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "romain2",
+      "bcryptHash": "M45wkXKg2rqPZzix1O9XZYFtgisVvVa",
+      "bcryptRound": 14,
+      "bcryptSalt": "KB8DEnTNf88nsGDwtT3mZO",
+      "followers": [],
+      "userTags": [],
       "lockoutCounter": 0
     }
   ],
   "tags": [
     {
-      "tag": "#test@server1.godswila.guru",
+      "tag": "#tags@server1.godswila.guru",
       "followers": [
-        "loans@server1.godswila.guru"
+        "loans@server1.godswula.guru",
+        "abcdef@server.godswila.guru"
       ]
     }
   ]
