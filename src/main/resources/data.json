@@ -1,0 +1,32 @@
+{
+  "currentDomain": "server1.godswila.guru",
+  "saltSizeInBytes": 16,
+  "multicastAddress": "224.1.1.255",
+  "multicastPort": 22510,
+  "unicastPort": 22510,
+  "relayPort": 22510,
+  "networkInterface": "eth12",
+  "base64AES": "",
+  "tls": true,
+  "users": [
+    {
+      "login": "loans",
+      "bcryptHash": "3B7Mo9SS8r0b7Cybvxm6JmPlMoiXCM.",
+      "bcryptRound": 14,
+      "bcryptSalt": "rOGiSuViXwuTQhAKNNuc1O",
+      "followers": [],
+      "userTags": [
+        "#test@server1.godswila.guru"
+      ],
+      "lockoutCounter": 0
+    }
+  ],
+  "tags": [
+    {
+      "tag": "#test@server1.godswila.guru",
+      "followers": [
+        "loans@server1.godswila.guru"
+      ]
+    }
+  ]
+}
