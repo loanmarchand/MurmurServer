@@ -1,8 +1,9 @@
-package org.model;
+package org.MurmurServer.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
+import org.MurmurServer.model.ApplicationData;
 
 import java.io.*;
 import java.util.ArrayList;

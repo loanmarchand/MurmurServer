@@ -53,7 +53,7 @@ public class MurmurRelay {
 
     private String getDomain(String message) throws Exception {
             //Decoupe le message en 2 parties
-            Pattern pattern = Pattern.compile(protocol.geRxEcho());
+            Pattern pattern = Pattern.compile(protocol.getRxEcho());
             Matcher matcher = pattern.matcher(message);
             if (matcher.find()){
                 String goodMessage = matcher.group(1);

@@ -1,12 +1,10 @@
 package org.MurmurServer.server;
 
-import org.MurmurServer.model.ApplicationData;
 import org.MurmurServer.model.*;
 
 import java.io.*;
 import java.math.BigInteger;
 import java.net.Socket;
-import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -26,10 +24,12 @@ public class ClientRunnable implements Runnable {
     private ApplicationData applicationData;
     private String shaCalculated;
     private Utilisateur user;
+    private final Json json;
 
 
     public ClientRunnable(Socket client, MurmurServer controller) {
-        this.applicationData = Json.getApplicationData();
+        this.json = new Json();
+        this.applicationData = json.getApplicationData();
         this.monClient = client;
         this.controller=  controller;
         protocol = new Protocol();
@@ -44,7 +44,7 @@ public class ClientRunnable implements Runnable {
         try {
             //Récuperer l'adresse du client et construis le message hello aléatoire
             String clientAddress = applicationData.getCurrentDomain();
-            String helloMsg = protocol.build_hello_message(clientAddress);
+            String helloMsg = protocol.buildHelloMessage(clientAddress);
 
             //Envoie le message de bienvenue (connexion entre app)
             System.out.println(helloMsg);
@@ -80,7 +80,7 @@ public class ClientRunnable implements Runnable {
                         String salt = matcher.group(7);
                         user = new Utilisateur(rx_username, rx_hash, rx_round, salt, new ArrayList<String>(), new ArrayList<String>(), 0);
                         applicationData.addUser(user);
-                        Json.sauvegarder(applicationData);
+                        json.sauvegarder(applicationData);
                     }
 
                     sendMessage("+OK\r\n");
@@ -161,12 +161,12 @@ public class ClientRunnable implements Runnable {
                                 //TODO : envoyer au relais
                             }
                         }
-                        Json.sauvegarder(applicationData);
+                        json.sauvegarder(applicationData);
                     }
                 }
                 //Gestion des messages
                 if (ligne.matches(protocol.getRxMessage())){
-                    applicationData = Json.getApplicationData();
+                    applicationData = json.getApplicationData();
                     //separer le message en 3 groupes
                     Pattern pattern = Pattern.compile(protocol.getRxMessage());
                     Matcher matcher = pattern.matcher(ligne);
@@ -188,7 +188,7 @@ public class ClientRunnable implements Runnable {
                                 if (tag1.getTag().equals(tag)){
                                     for (String user : tag1.getFollowers()){
                                         System.out.println("Message envoyé à "+user);
-                                        usersToBroadcast.add(Json.getUser(user.split("@")[0]));}
+                                        usersToBroadcast.add(json.getUser(user.split("@")[0]));}
                                 }
                             }
                         }
@@ -199,7 +199,7 @@ public class ClientRunnable implements Runnable {
                         for (Utilisateur user : usersToBroadcast){
                             System.out.println(user.getLogin());
                         }
-                        controller.broadcastToAllClientsExceptMe(usersToBroadcast, Protocol.createMessage(this.user.getLogin()+"@"+applicationData.getCurrentDomain(), group1), this);
+                        controller.broadcastToAllClientsExceptMe(usersToBroadcast, protocol.createMessage(this.user.getLogin()+"@"+applicationData.getCurrentDomain(), group1), this);
                     }
                 }
 
@@ -222,15 +222,15 @@ public class ClientRunnable implements Runnable {
     public void connectUser(String name){
         String sha3hash;
 
-        user = Json.getUser(name);
+        user = json.getUser(name);
 
         //Si utilisateur pas trouvé dans le fichier, -ERR
         if(user == null){
-            System.out.printf("Erreur");
+            System.out.print("Erreur");
             sendMessage("-ERR\r\n");
         }else{
             //Envoie un message param avec le round et le sel
-            sendMessage(protocol.build_param_message(user.getBcryptRound(),user.getBcryptSalt()));
+            sendMessage(protocol.buildParamMessage(user.getBcryptRound(),user.getBcryptSalt()));
 
             //Calcule le sha3 sur base des 22 caractères du message HELLO, et de la chaineHashBcrypt
             try{

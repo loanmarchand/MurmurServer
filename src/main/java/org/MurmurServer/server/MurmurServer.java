@@ -2,6 +2,7 @@ package org.MurmurServer.server;
 
 import org.MurmurServer.model.ApplicationData;
 import org.MurmurServer.model.Json;
+import org.MurmurServer.model.Protocol;
 import org.MurmurServer.model.Utilisateur;
 
 import javax.net.ssl.SSLServerSocket;
@@ -23,10 +24,14 @@ public class MurmurServer {
     private static final int DEFAULT_PORT = 23505;
     private final List<ClientRunnable> clientList;
     private final ExecutorService executorService;
+    private final Json json;
+    private final Protocol protocol;
 
     public MurmurServer(int port) throws IOException {
         clientList = Collections.synchronizedList(new ArrayList<>());
         SSLServerSocket server;
+        json = new Json();
+        protocol = new Protocol();
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         System.setProperty("javax.net.ssl.keyStore", "src/main/resources/star.godswila.guru.p12");
         System.setProperty("javax.net.ssl.keyStorePassword", "labo2023");
@@ -56,7 +61,7 @@ public class MurmurServer {
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             try(DatagramSocket socket = new DatagramSocket()){
                 InetAddress address = InetAddress.getByName("224.1.1.255");
-                ApplicationData applicationData = Json.getApplicationData();
+                ApplicationData applicationData = json.getApplicationData();
                 assert applicationData != null;
                 String message = protocol.build_echo(applicationData.getCurrentDomain(),DEFAULT_PORT);
                 byte[] buffer = message.getBytes();

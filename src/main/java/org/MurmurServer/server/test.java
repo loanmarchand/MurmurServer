@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class test {
 
-    private static Protocol protocol = new Protocol();
+    private static final Protocol protocol = new Protocol();
 
     public static void main(String[] args){
         Pattern pattern = Pattern.compile(protocol.getRxConfirm());
