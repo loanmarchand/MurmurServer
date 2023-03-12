@@ -1,5 +1,6 @@
 package org.MurmurServer.server;
 
+import org.MurmurRelay.relay.MurmurRelay;
 import org.MurmurServer.model.ApplicationData;
 import org.MurmurServer.model.Json;
 import org.MurmurServer.model.Protocol;
@@ -40,12 +41,13 @@ public class MurmurServer {
 
 
         while (true) {
-            //Envoye echo a tous les relais jusqu'a ce qu'un se connecte
             sendEchoToRelay();
             SSLSocket client = (SSLSocket) server.accept();
             ClientRunnable runnable = new ClientRunnable(client, this);
             clientList.add(runnable);
             executorService.execute(runnable);
+            MurmurRelay murmurRelay = new MurmurRelay(DEFAULT_PORT);
+            executorService.execute(murmurRelay);
 
         }
     }

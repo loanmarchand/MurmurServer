@@ -10,7 +10,7 @@ import java.net.MulticastSocket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MurmurRelay {
+public class MurmurRelay implements Runnable {
 
     private static final int DEFAULT_PORT = 23505;
 
@@ -51,7 +51,7 @@ public class MurmurRelay {
         }
     }
 
-    private String getDomain(String message) throws Exception {
+    private String getDomain(String message) {
             //Decoupe le message en 2 parties
             Pattern pattern = Pattern.compile(protocol.getRxEcho());
             Matcher matcher = pattern.matcher(message);
@@ -70,4 +70,8 @@ public class MurmurRelay {
         MurmurRelay murmurRelay = new MurmurRelay(DEFAULT_PORT);
     }
 
+    @Override
+    public void run() {
+
+    }
 }
