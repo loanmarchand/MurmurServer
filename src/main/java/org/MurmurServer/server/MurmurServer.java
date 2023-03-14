@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,8 +47,10 @@ public class MurmurServer {
             ClientRunnable runnable = new ClientRunnable(client, this);
             clientList.add(runnable);
             executorService.execute(runnable);
-            MurmurRelay murmurRelay = new MurmurRelay(DEFAULT_PORT);
+            SSLSocket socket = (SSLSocket) server.accept();
+            MurmurRelay murmurRelay = new MurmurRelay();
             executorService.execute(murmurRelay);
+
 
         }
     }
@@ -55,8 +58,6 @@ public class MurmurServer {
 
     /**
      * Envoie un echo a tous les relais
-     * Des qu'un relais repond on se connecte a lui
-     * Et on arrete d'envoyer des echo
      */
     private void sendEchoToRelay() {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -69,7 +70,7 @@ public class MurmurServer {
                 byte[] buffer = message.getBytes();
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, DEFAULT_PORT);
                 socket.send(packet);
-                System.out.println("Decrypted: " + message);
+                System.out.println("Message envoyé : " + message);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -77,6 +78,15 @@ public class MurmurServer {
         }, 0, 15, TimeUnit.SECONDS);
 
     }
+
+    /**
+     * Envoie SEND au relais connecte
+     *
+     */
+    public void sendToRelay(){
+        //TODO : Envoie SEND au relais connecte
+    }
+
 
     public void broadcastToAllClientsExceptMe(List<Utilisateur> me, String message, ClientRunnable clientRunnable) {
         clientList.stream()

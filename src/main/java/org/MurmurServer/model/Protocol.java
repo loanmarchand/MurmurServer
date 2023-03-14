@@ -33,6 +33,9 @@ public class Protocol {
     private static final String RX_PORT = "(\\d{1,5})";
     private static final String RX_ECHO = "ECHO ([\\w\\.]{5,200}) \\d{1,5}[\\r\\n]";
     public static final String ECHO_MSG = "ECHO <domain> <port>\r\n";
+    private static final String RX_ID_DOMAIN = "(\\d{1,5})";
+    private static final String RX_MESSAGE = "(FOLLOW|MSG)\\s+(.*)";
+    private static final String RX_SEND = "SEND" + RX_ESP + RX_ID_DOMAIN + RX_ESP + RX_DOMAIN + RX_ESP + "("+RX_DOMAIN+"|"+RX_TAG_DOMAIN+")" + RX_ESP + RX_MESSAGE + RX_CRLF;
 
     /**
      * Créer un message en remplacent les champs <user> et <message> par les valeurs passées en paramètres.
@@ -120,5 +123,9 @@ public class Protocol {
 
     public String build_echo(String currentDomain, int defaultPort) {
         return ECHO_MSG.replace("<domain>", currentDomain).replace("<port>", Integer.toString(defaultPort));
+    }
+
+    public String getRxSend() {
+        return RX_SEND;
     }
 }
