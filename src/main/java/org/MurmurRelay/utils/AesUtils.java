@@ -54,13 +54,6 @@ public class AesUtils {
         return new String(plainTextBytes, StandardCharsets.UTF_8);
     }
 
-    public SecretKey generateKey() throws NoSuchAlgorithmException {
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-        keyGenerator.init(256);
-        // Generate Key
-        return keyGenerator.generateKey();
-    }
-
     public String encodeKey(SecretKey secretKey) {
         return Base64.getEncoder().encodeToString(secretKey.getEncoded());
     }

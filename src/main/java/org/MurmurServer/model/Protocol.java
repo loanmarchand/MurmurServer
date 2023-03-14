@@ -31,7 +31,7 @@ public class Protocol {
     private static final String RX_MSG = "^MSG\\s+(.*)$" + RX_CRLF;
     private static final String MSGS = "MSGS <user> <message>\r\n";
     private static final String RX_PORT = "(\\d{1,5})";
-    private static final String RX_ECHO = "ECHO ([\\w\\.]{5,200}) \\d{1,5}[\\r\\n]";
+    private static final String RX_ECHO = "ECHO ([\\w\\.]{5,200}) (\\d{1,5})[\\r\\n]";
     public static final String ECHO_MSG = "ECHO <domain> <port>\r\n";
     private static final String RX_ID_DOMAIN = "(\\d{1,5})";
     private static final String RX_MESSAGE = "(FOLLOW|MSG)\\s+(.*)";

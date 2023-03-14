@@ -47,9 +47,9 @@ public class MurmurServer {
             ClientRunnable runnable = new ClientRunnable(client, this);
             clientList.add(runnable);
             executorService.execute(runnable);
-            SSLSocket socket = (SSLSocket) server.accept();
-            MurmurRelay murmurRelay = new MurmurRelay();
-            executorService.execute(murmurRelay);
+
+
+
 
 
         }
@@ -77,14 +77,6 @@ public class MurmurServer {
             }
         }, 0, 15, TimeUnit.SECONDS);
 
-    }
-
-    /**
-     * Envoie SEND au relais connecte
-     *
-     */
-    public void sendToRelay(){
-        //TODO : Envoie SEND au relais connecte
     }
 
 

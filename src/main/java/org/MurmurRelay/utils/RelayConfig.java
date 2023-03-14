@@ -69,4 +69,13 @@ public class RelayConfig {
         String[] values = aesToServerMap.values().toArray(new String[0]);
         return String.join(",", values);
     }
+
+    public String getKey(String domain) {
+        for (Map.Entry<String, String> entry : aesToServerMap.entrySet()) {
+            if (entry.getValue().equals(domain)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
 }
