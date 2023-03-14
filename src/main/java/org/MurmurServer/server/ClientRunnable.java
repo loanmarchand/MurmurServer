@@ -62,7 +62,6 @@ public class ClientRunnable implements Runnable {
 
             //Récupère l'action de base du client
             String ligne = in.readLine();
-            //TODO : DECRYPTER LA LIGNE
             System.out.printf("Ligne reçue : %s\r\n", ligne);
 
             //Tant que le client est connecté et qu'il envoie des informations :
@@ -127,24 +126,6 @@ public class ClientRunnable implements Runnable {
                 if (ligne.matches(protocol.getRxMessage())){
                     sendMsg(ligne);
                 }
-
-                // Gestion des messages venant d'un relais
-                if (aesUtils.decrypt(ligne.getBytes(),aesUtils.decodeKey(applicationData.getBase64AES())).matches(protocol.getRxSend())){
-                    String decrypt = aesUtils.decrypt(ligne.getBytes(),aesUtils.decodeKey(applicationData.getBase64AES()));
-                    Pattern pattern = Pattern.compile(protocol.getRxSend());
-                    Matcher matcher = pattern.matcher(decrypt);
-                    if (matcher.find()){
-                        String group = matcher.group(8);
-                        if (group.matches(protocol.getRxFollow())){
-                            sendFollow(group);
-                        }
-                        if (group.matches(protocol.getRxMessage())){
-                            sendMsg(group);
-                        }
-                    }
-                }
-
-
 
                 ligne = in.readLine();
                 System.out.printf("Ligne reçue : %s\r\n", ligne);
@@ -221,7 +202,7 @@ public class ClientRunnable implements Runnable {
                 }
             }
             //Récuperer les tags de l'user et verifier dans les tags si il y en a un qui a le tag comme follower
-            List<String> tags = applicationData.getUser(this.user.getLogin()).getUserTags();//TODO : vérifier si ça marche
+            List<String> tags = applicationData.getUser(this.user.getLogin()).getUserTags();
             for (String tag : tags){
                 for (Tag tag1 : applicationData.getTags()){
                     if (tag1.getTag().equals(tag)){

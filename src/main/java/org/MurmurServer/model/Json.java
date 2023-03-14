@@ -14,7 +14,7 @@ import java.util.List;
  * et en utilisant la librairie Gson.
  */
 public class Json {
-    public static final String URL_CONFIG = "src/main/resources/config.json";
+    public static final String URL_CONFIG = "src/main/resources/configServer.json";
     private final String URL_JSON = "src/main/resources/data.json";
 
     /**

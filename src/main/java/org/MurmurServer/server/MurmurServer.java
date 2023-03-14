@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MurmurServer {
     private static final int DEFAULT_PORT = 23505;
+
     private final List<ClientRunnable> clientList;
     private final ExecutorService executorService;
     private final Json json;
@@ -57,7 +58,8 @@ public class MurmurServer {
 
 
     /**
-     * Envoie un echo a tous les relais
+     * Envoie un echo en multicast toutes les 15 secondes
+     * A l'adresse 224.1.1.255
      */
     private void sendEchoToRelay() {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();

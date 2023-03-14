@@ -1,7 +1,6 @@
 package org.MurmurRelay.utils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -10,11 +9,11 @@ import java.util.Map;
 
 public class RelayConfig {
 
-    private Map<String, String> aesToServerMap;
+    private HashMap<String, String> domainKeyMap;
     private final String configFile;
+    private String currentDomain;
 
     public RelayConfig(String configFile) {
-        this.aesToServerMap = new HashMap<>();
         this.configFile = configFile;
         loadConfig();
     }
@@ -23,59 +22,26 @@ public class RelayConfig {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8));
             Gson gson = new Gson();
-            this.aesToServerMap = gson.fromJson(reader, HashMap.class);
-        } catch (FileNotFoundException e) {
-            System.out.println("Could not find config file: " + configFile);
-        }
-    }
-
-    public void addEntry(String aesKey, String serverAddress) {
-        this.aesToServerMap.put(aesKey, serverAddress);
-        saveConfig();
-    }
-
-    private void saveConfig() {
-        try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            FileWriter writer = new FileWriter(configFile);
-            gson.toJson(this.aesToServerMap, writer);
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("Error saving config file: " + configFile);
-        }
-    }
-
-    public Map<String, String> getAesToServerMap() {
-        return aesToServerMap;
-    }
-
-    public void setAesToServerMap(Map<String, String> aesToServerMap) {
-        this.aesToServerMap = aesToServerMap;
-    }
-
-    public static void main(String[] args) {
-        RelayConfig config = new RelayConfig("src/main/resources/relayConfig.json");
-        config.addEntry("test", "test");
-        System.out.println(config.getAesToServerMap());
-        System.out.println(config.getKeys()[1]);
-    }
-
-    public String[] getKeys() {
-        return aesToServerMap.keySet().toArray(new String[0]);
-    }
-
-    public String getDomains() {
-        //Recuperes les valeurs de la map
-        String[] values = aesToServerMap.values().toArray(new String[0]);
-        return String.join(",", values);
-    }
-
-    public String getKey(String domain) {
-        for (Map.Entry<String, String> entry : aesToServerMap.entrySet()) {
-            if (entry.getValue().equals(domain)) {
-                return entry.getKey();
+            JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
+            this.currentDomain = jsonObject.get("currentDomain").getAsString();
+            JsonArray domainKeyArray = jsonObject.getAsJsonArray("domainKey");
+            this.domainKeyMap = new HashMap<>();
+            for (JsonElement element : domainKeyArray) {
+                JsonObject domainKeyObject = element.getAsJsonObject();
+                for (String key : domainKeyObject.keySet()) {
+                    domainKeyMap.put(key, domainKeyObject.get(key).getAsString());
+                }
             }
+        } catch (FileNotFoundException e) {
+            System.out.println("Impossible de trouver le fichier de configuration : " + configFile);
         }
-        return null;
+    }
+
+    public String getCurrentDomain() {
+        return currentDomain;
+    }
+
+    public HashMap<String, String> getDomainKeyMap() {
+        return domainKeyMap;
     }
 }

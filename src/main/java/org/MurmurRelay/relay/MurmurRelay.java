@@ -2,84 +2,108 @@ package org.MurmurRelay.relay;
 
 import org.MurmurRelay.utils.AesUtils;
 import org.MurmurRelay.utils.RelayConfig;
-import org.MurmurServer.model.ApplicationData;
 import org.MurmurServer.model.Json;
 import org.MurmurServer.model.Protocol;
 
-import javax.crypto.SecretKey;
-import javax.net.ssl.SSLSocket;
-import java.io.IOException;
-import java.net.*;
+import java.io.*;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MurmurRelay {
-    private final Map<String, Socket> serverMap;
+    private final int relayPort;
     private final Protocol protocol;
+    private final Json json;
+    private final HashMap<String, String> domainKeyMap;
+    private final Map<String, Socket> connectedServers;
     private AesUtils aesUtils;
     private RelayConfig relayConfig;
 
-    public MurmurRelay() {
-        serverMap = new HashMap<>();
-        protocol = new Protocol();
-        aesUtils = new AesUtils();
-        relayConfig = new RelayConfig("src/main/resources/relayConfig.json");
+    public MurmurRelay(int relayPort) throws IOException {
+        this.relayPort = relayPort;
+        this.protocol = new Protocol();
+        this.json = new Json();
+        this.aesUtils = new AesUtils();
+        this.relayConfig = new RelayConfig("src/main/resources/configRelay.json");
+        this.domainKeyMap =  relayConfig.getDomainKeyMap();
+        this.connectedServers = new HashMap<>();
+
+        listenForMulticastAnnouncements();
     }
 
-    public void start() throws IOException {
-        InetAddress group = InetAddress.getByName("224.1.1.255");
-        MulticastSocket socket = new MulticastSocket(23505);
-        socket.joinGroup(group);
+    private void listenForMulticastAnnouncements() throws IOException {
+        try (MulticastSocket multicastSocket = new MulticastSocket(relayPort)) {
+            InetAddress groupAddress = InetAddress.getByName("224.1.1.255");
+            multicastSocket.joinGroup(groupAddress);
 
-        while (true) {
-            byte[] buffer = new byte[15000];
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-            socket.receive(packet);
+            while (true) {
+                byte[] buffer = new byte[1024];
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                multicastSocket.receive(packet);
 
-            String message = new String(packet.getData());
-            String domain = getDomain(message)[0];
-            String port = getDomain(message)[1];
-                if (relayConfig.getDomains().contains(domain)&&serverMap.get(domain)==null) {
-                    Socket serverSocket = new Socket(domain, Integer.parseInt(port));
-                    serverMap.put(domain, serverSocket);
-                    System.out.println("Server " + domain + " connected.");
+                String message = new String(packet.getData(), 0, packet.getLength(), StandardCharsets.UTF_8);
 
-                    Thread thread = new Thread(new ServerListener(serverSocket, this));
-                    thread.start();
+                Pattern pattern = Pattern.compile(protocol.getRxEcho());
+                Matcher matcher = pattern.matcher(message);
+                if (matcher.find()){
+                    String domain = matcher.group(1);
+                    int serverPort = Integer.parseInt(matcher.group(2));
+
+                    if (domainKeyMap.containsKey(domain) && !connectedServers.containsKey(domain)) {
+                        Socket serverSocket = new Socket(packet.getAddress(), serverPort);
+                        connectedServers.put(domain, serverSocket);
+                        System.out.println("Connected to " + domain + " at " + packet.getAddress() + ":" + serverPort);
+                        // Démarrer un thread pour gérer la communication avec le serveur
+                        new Thread(() -> handleServerCommunication(serverSocket, domain)).start();
+                    }
                 }
 
+            }
         }
     }
 
-    public String[] getDomain(String message) {
-        Pattern pattern = Pattern.compile(protocol.getRxEcho());
-        Matcher matcher = pattern.matcher(message);
-        if (matcher.find()) {
-            return new String[]{matcher.group(1), matcher.group(2)};
+    private void handleServerCommunication(Socket serverSocket, String domain) {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(serverSocket.getOutputStream()))) {
+
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                String decryptedMessage = aesUtils.decrypt(inputLine.getBytes(), aesUtils.decodeKey(domainKeyMap.get(domain)));
+                String destinationDomain = getDestinationDomainFromMessage(decryptedMessage);
+
+                if (connectedServers.containsKey(destinationDomain)) {
+                    String encryptedMessage = aesUtils.encrypt(decryptedMessage, aesUtils.decodeKey(domainKeyMap.get(destinationDomain)));
+                    BufferedWriter destinationServerOut = new BufferedWriter(new OutputStreamWriter(connectedServers.get(destinationDomain).getOutputStream()));
+                    destinationServerOut.write(encryptedMessage);
+                    destinationServerOut.newLine();
+                    destinationServerOut.flush();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            connectedServers.remove(domain);
         }
-        return null;
     }
 
-    public void sendMessage(String domain,String message) throws Exception {
-        if (serverMap.get(domain)==null){
-            return;
+    private String getDestinationDomainFromMessage(String message) {
+        return message;
         }
-        Socket socket = serverMap.get(domain);
-        String cryptedMessage = aesUtils.encrypt(message,getAesKey(socket));
-        socket.getOutputStream().write(cryptedMessage.getBytes());
-        socket.getOutputStream().flush();
 
-    }
 
     public static void main(String[] args) throws IOException {
-        MurmurRelay relay = new MurmurRelay();
-        relay.start();
-    }
-
-    public SecretKey getAesKey(Socket serverSocket) {
-        String domain = serverSocket.getInetAddress().getHostName();
-        return aesUtils.decodeKey(relayConfig.getKey(domain));
+        int relayPort = 23505;
+        new MurmurRelay(relayPort);
     }
 }
