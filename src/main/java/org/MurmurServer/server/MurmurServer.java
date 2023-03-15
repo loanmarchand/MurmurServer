@@ -10,10 +10,10 @@ import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.Socket;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,15 +24,19 @@ import java.util.concurrent.TimeUnit;
 
 public class MurmurServer {
     private static final int DEFAULT_PORT = 23505;
+    private static final int DEFAULT_RELAY_PORT = 23515;
 
     private final List<ClientRunnable> clientList;
     private final ExecutorService executorService;
     private final Json json;
     private final Protocol protocol;
+    ServerSocket serverSocket;
+    Socket relayClient;
 
     public MurmurServer(int port) throws IOException {
         clientList = Collections.synchronizedList(new ArrayList<>());
         SSLServerSocket server;
+
         json = new Json();
         protocol = new Protocol();
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -40,20 +44,34 @@ public class MurmurServer {
         System.setProperty("javax.net.ssl.keyStorePassword", "labo2023");
         SSLServerSocketFactory serverScocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
         server = (SSLServerSocket) serverScocketFactory.createServerSocket(port);
-
+        serverSocket = new ServerSocket(DEFAULT_RELAY_PORT);
+        sendEchoToRelay();
 
         while (true) {
-            sendEchoToRelay();
+
             SSLSocket client = (SSLSocket) server.accept();
             ClientRunnable runnable = new ClientRunnable(client, this);
             clientList.add(runnable);
             executorService.execute(runnable);
 
-
-
-
-
+            new Thread(()->{
+                try {
+                    startRelayConnexion();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
         }
+    }
+
+    /**
+     * Lance un thread qui écoute les connexions entrantes du relay
+     * @throws IOException
+     */
+    private void startRelayConnexion() throws IOException {
+        relayClient = serverSocket.accept();
+        ServerListener serverListener = new ServerListener(relayClient, this);
+        executorService.execute(serverListener);
     }
 
 
@@ -68,9 +86,9 @@ public class MurmurServer {
                 InetAddress address = InetAddress.getByName("224.1.1.255");
                 ApplicationData applicationData = json.getApplicationData();
                 assert applicationData != null;
-                String message = protocol.build_echo(applicationData.getCurrentDomain(),DEFAULT_PORT);
+                String message = protocol.build_echo(applicationData.getCurrentDomain(),DEFAULT_RELAY_PORT);
                 byte[] buffer = message.getBytes();
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, DEFAULT_PORT);
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, DEFAULT_RELAY_PORT);
                 socket.send(packet);
                 System.out.println("Message envoyé : " + message);
 
@@ -94,5 +112,19 @@ public class MurmurServer {
             System.out.println("Shutting down server...");
             murmurServer.executorService.shutdown();
         }));
+    }
+
+    public String getSecretKey() {
+        return json.getApplicationData().getBase64AES();
+    }
+
+    public void sendToRelay(String ligne) {
+        try {
+            PrintWriter out = new PrintWriter(new OutputStreamWriter(relayClient.getOutputStream(), StandardCharsets.UTF_8), true);
+            out.println(ligne);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

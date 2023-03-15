@@ -2,7 +2,8 @@
   "currentDomain": "relay.godswila.guru",
   "domainKey": [
     {"test": "test"},
-    {"server1.godswila.guru": "DWXFPYods+h16k2NcDMB3VAoJP2D3cfc3CNVCx+d36g="}
+    {"server1.godswila.guru": "rpVAtjuNV4gm2zfN6Q9wgggsjwgmnMVKU1kcqL4zn2w="},
+    {"server2.godswila.guru": "lI15WMg00OBNOWcgmeG4qSqFw340fnMuoxogpb+So5Q="}
   ]
 
 }

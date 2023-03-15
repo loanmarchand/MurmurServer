@@ -46,6 +46,7 @@ public class Json {
         if (!file.exists()) {
             try {
                 if (file.createNewFile()) {
+                    sauvegarder(getApplicationDataVide());
                     return true;
                 }
             } catch (IOException e) {
@@ -95,18 +96,6 @@ public class Json {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-
-        // Vérifier si le fichier existe.
-        File file = new File(URL_JSON);
-        if (!file.exists()) {
-            sauvegarder(getApplicationDataVide());
-        }
-
-        try (Reader reader = new FileReader(URL_JSON)) {
-            return gson.fromJson(reader, ApplicationData.class);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         return null;

@@ -54,12 +54,12 @@ public class MurmurRelay {
                 if (matcher.find()){
                     String domain = matcher.group(1);
                     int serverPort = Integer.parseInt(matcher.group(2));
-
+                    System.out.println("Received echo from " + domain + " at " + packet.getAddress() + ":" + serverPort);
                     if (domainKeyMap.containsKey(domain) && !connectedServers.containsKey(domain)) {
-                        Socket serverSocket = new Socket(packet.getAddress(), serverPort);
+                        Socket serverSocket = new Socket(InetAddress.getByName(domain), serverPort);
                         connectedServers.put(domain, serverSocket);
                         System.out.println("Connected to " + domain + " at " + packet.getAddress() + ":" + serverPort);
-                        // Démarrer un thread pour gérer la communication avec le serveur
+// Démarrer un thread pour gérer la communication avec le serveur
                         new Thread(() -> handleServerCommunication(serverSocket, domain)).start();
                     }
                 }
@@ -78,7 +78,7 @@ public class MurmurRelay {
                 String destinationDomain = getDestinationDomainFromMessage(decryptedMessage);
 
                 if (connectedServers.containsKey(destinationDomain)) {
-                    String encryptedMessage = aesUtils.encrypt(decryptedMessage, aesUtils.decodeKey(domainKeyMap.get(destinationDomain)));
+                    String encryptedMessage = aesUtils.encrypt(decryptedMessage, domainKeyMap.get(destinationDomain));
                     BufferedWriter destinationServerOut = new BufferedWriter(new OutputStreamWriter(connectedServers.get(destinationDomain).getOutputStream()));
                     destinationServerOut.write(encryptedMessage);
                     destinationServerOut.newLine();
@@ -103,7 +103,7 @@ public class MurmurRelay {
 
 
     public static void main(String[] args) throws IOException {
-        int relayPort = 23505;
+        int relayPort = 23515;
         new MurmurRelay(relayPort);
     }
 }
