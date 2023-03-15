@@ -6,7 +6,7 @@
   "unicastPort": 22510,
   "relayPort": 22510,
   "networkInterface": "eth12",
-  "base64AES": "rpVAtjuNV4gm2zfN6Q9wgggsjwgmnMVKU1kcqL4zn2w\u003d",
+  "base64AES": "lI15WMg00OBNOWcgmeG4qSqFw340fnMuoxogpb+So5Q=",
   "tls": true,
   "users": [
     {
@@ -16,12 +16,7 @@
       "bcryptSalt": "iwjndzdR1srbPzexp75JgO",
       "followers": [],
       "userTags": [
-        "#thibaut@server1.godswila.guru",
-        "#retttag@server2.godswila.guru",
-        "#akldja@server2.godswila.guru",
-        "#akldjada@server2.godswila.guru",
-        "#akldezaaaja@server2.godswila.guru",
-        "#aklddtrhhtrthhthrtrhja@server2.godswila.guru"
+        "#helmo@server1.godswila.guru"
       ],
       "lockoutCounter": 0
     },
@@ -35,7 +30,7 @@
 
       ],
       "userTags": [
-        "#thibaut@server1.godswila.guru"
+        "#helmo@server1.godswila.guru"
 
       ],
       "lockoutCounter": 0
@@ -43,10 +38,10 @@
   ],
   "tags": [
     {
-      "tag": "#thibaut@server1.godswila.guru",
+      "tag": "#helmo@server1.godswila.guru",
       "followers": [
         "thibaut@server1.godswila.guru",
-        "romain@server1.godswila.guru"
+        "romain@server2.godswila.guru"
       ]
     }
   ]

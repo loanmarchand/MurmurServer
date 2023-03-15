@@ -37,7 +37,7 @@ public class MurmurRelay {
     private void listenForMulticastAnnouncements() throws IOException {
         try (MulticastSocket multicastSocket = new MulticastSocket(relayPort)) {
             InetAddress groupAddress = InetAddress.getByName("224.1.1.255");
-            multicastSocket.setNetworkInterface(NetworkInterface.getByName("eth19"));
+            multicastSocket.setNetworkInterface(NetworkInterface.getByName("eth5"));
             multicastSocket.joinGroup(groupAddress);
 
             while (true) {
@@ -55,7 +55,7 @@ public class MurmurRelay {
                     int serverPort = Integer.parseInt(matcher.group(2));
                     System.out.println("Received echo from " + domain + " at " + packet.getAddress() + ":" + serverPort);
                     if (domainKeyMap.containsKey(domain) && !connectedServers.containsKey(domain)) {
-                        Socket serverSocket = new Socket(InetAddress.getByName(domain), serverPort);
+                        Socket serverSocket = new Socket(packet.getAddress(), serverPort);
                         connectedServers.put(domain, serverSocket);
                         System.out.println("Connected to " + domain + " at " + packet.getAddress() + ":" + serverPort);
 // Démarrer un thread pour gérer la communication avec le serveur

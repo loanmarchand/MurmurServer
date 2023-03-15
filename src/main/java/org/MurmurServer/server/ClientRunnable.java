@@ -123,13 +123,13 @@ public class ClientRunnable implements Runnable {
                 }
                 //Gestion des follows
                 if (ligne.matches(protocol.getRxFollow())){
-                    commandServer = new CommandServer(protocol, applicationData, user, json, controller,this);
-                    commandServer.sendFollow(ligne);
+                    commandServer = new CommandServer();
+                    commandServer.sendFollow(ligne,applicationData,user,controller);
                 }
                 //Gestion des messages
                 if (ligne.matches(protocol.getRxMessage())){
-                    commandServer = new CommandServer(protocol, applicationData, user, json, controller,this);
-                    commandServer.sendMsg(ligne);
+                    commandServer = new CommandServer();
+                    commandServer.sendMsg(ligne,user,controller,this);
                 }
 
                 ligne = in.readLine();

@@ -39,22 +39,24 @@ public class ServerListener implements Runnable{
             System.out.println(message);//TODO ICI QUE LE MESSAGE(CRYPTER) VIENT AU SERVER
             while (message!=null){
                 String decrypt = aesUtils.decrypt(message, murmurServer.getSecretKey());
-                //TODO : vérifier que le message est bien SEND (protocol)
+                System.out.println(decrypt);
                 Pattern pattern = Pattern.compile(protocol.getRxSend());
                 Matcher matcher = pattern.matcher(decrypt);
                 if (matcher.find()) {
-                    //TODO : Executer la commande
-                    String ligne = matcher.group(9);
-
-                    /*if (ligne.matches(protocol.getRxFollow())){
-                        commandServer = new CommandServer(protocol, applicationData, user, json, controller,this);
-                        commandServer.sendFollow(ligne);
+                    String ligne = matcher.group(10)+" "+matcher.group(13);
+                    String user = matcher.group(11);
+                    String domain = matcher.group(2);
+                    if (ligne.matches(protocol.getRxFollow())){
+                        pattern = Pattern.compile(protocol.getRxFollow());
+                        matcher = pattern.matcher(ligne);
+                        commandServer = new CommandServer();
+                        commandServer.followTagRelay(matcher.group(1),user,domain);
                     }
                     //Gestion des messages
                     if (ligne.matches(protocol.getRxMessage())){
-                        commandServer = new CommandServer(protocol, applicationData, user, json, controller,this);
-                        commandServer.sendMsg(ligne);
-                    }*/
+                        commandServer = new CommandServer();
+                        // commandServer.sendMsg(ligne);//TODO : Envoyer le message au serveur + DEMANDER id
+                    }
                 }
 
 

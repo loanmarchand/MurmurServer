@@ -13,20 +13,21 @@ public class test {
     private static final Protocol protocol = new Protocol();
 
     public static void main(String[] args){
-        /*String text;
-        Pattern pattern = Pattern.compile(protocol.getRxSend());
-        Matcher matcher = pattern.matcher("SEND 1234 server1.godswila.guru #dadzad@server2.godswila.guru FOLLOW michel@server2.godswila.guru\n");
-        if (matcher.find()) {
-            text = matcher.group(5);
-            if(text != null){
-                //J'ai un nom de dom (server2.godswila.guru)
-                System.out.println(text);
-            }else{
-                text = matcher.group(8);
-                System.out.println(text);
-            }
-        }*/
-        KeyGenerator keyGenerator = null;
+//        String text;
+//        Pattern pattern = Pattern.compile(protocol.getRxSend());
+//        Matcher matcher = pattern.matcher("SEND 1234 server1.godswila.guru server2.godswila.guru FOLLOW loans michel@server2.godswila.guru\r\n");
+//        if (matcher.find()) {
+//            String ligne = matcher.group(10)+" "+matcher.group(13);
+//            String user = matcher.group(11);
+//            String domain = matcher.group(2);
+//            pattern = Pattern.compile(protocol.getRxFollow());
+//            matcher = pattern.matcher(ligne);
+//            if (matcher.find()){
+//                System.out.println(matcher.group(1));
+//            }
+//            System.out.println(ligne+" "+user+" "+domain);
+//        }
+        /*KeyGenerator keyGenerator = null;
         try {
             keyGenerator = KeyGenerator.getInstance("AES");
         } catch (NoSuchAlgorithmException e) {
@@ -34,7 +35,15 @@ public class test {
         }
         keyGenerator.init(256);
         SecretKey secretKey = keyGenerator.generateKey();
-        System.out.println(Base64.getEncoder().encodeToString(secretKey.getEncoded()));
+        System.out.println(Base64.getEncoder().encodeToString(secretKey.getEncoded()));*/
+        // Test follow avec groupe 1 et 2.
+        String test = "FOLLOW #test@server2.godswila.guru";
+        Pattern pattern = Pattern.compile(protocol.getRxFollow());
+        Matcher matcher = pattern.matcher(test);
+        if (matcher.find()) {
+            System.out.println("Le groupe 1 : " + matcher.group(1));
+            System.out.println("Le groupe 2 : " + matcher.group(2));
+        }
     }
 
 
