@@ -77,15 +77,18 @@ public class ClientRunnable implements Runnable {
                     // Récupérer la valeur de RX_ESP à partir de la chaîne ligne
                     if (matcher.find()) {
                         String rx_username = matcher.group(1);
-                        String rx_hash = matcher.group(9);
-                        int rx_round = Integer.parseInt(matcher.group(6));
-                        String salt = matcher.group(7);
-                        user = new Utilisateur(rx_username, rx_hash, rx_round, salt, new ArrayList<String>(), new ArrayList<String>(), 0);
-                        applicationData.addUser(user);
-                        json.sauvegarder(applicationData);
+                        if(json.getUser("rx_username") == null){
+                            String rx_hash = matcher.group(9);
+                            int rx_round = Integer.parseInt(matcher.group(6));
+                            String salt = matcher.group(7);
+                            user = new Utilisateur(rx_username, rx_hash, rx_round, salt, new ArrayList<String>(), new ArrayList<String>(), 0);
+                            applicationData.addUser(user);
+                            json.sauvegarder(applicationData);
+                            sendMessage("+OK\r\n");
+                        }else{
+                            sendMessage("-ERR\r\n");
+                        }
                     }
-
-                    sendMessage("+OK\r\n");
                 }
                 //Connexion d'un utilisateur
                 if(ligne.matches(protocol.getRxConnect())){
@@ -150,7 +153,6 @@ public class ClientRunnable implements Runnable {
      * @param name nom d'utilisateur
      */
     public void connectUser(String name){
-        String sha3hash;
 
         user = json.getUser(name);
 

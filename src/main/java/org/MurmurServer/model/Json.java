@@ -64,18 +64,15 @@ public class Json {
      */
     public Utilisateur getUser(String login) {
         Gson gson = new Gson();
-        Utilisateur user = new Utilisateur();
-
         if (creerFichierSiInexistant(new File(URL_JSON))) {
             try (Reader reader = new FileReader(URL_JSON)) {
                 ApplicationData data = gson.fromJson(reader, ApplicationData.class);
                 List<Utilisateur> users = data.getUsers();
                 for (Utilisateur u : users) {
                     if (u.getLogin().equals(login)) {
-                        user = u;
+                        return u;
                     }
                 }
-                return user;
             } catch (IOException e) {
                 e.printStackTrace();
             }

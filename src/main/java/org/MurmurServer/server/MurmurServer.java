@@ -1,6 +1,6 @@
 package org.MurmurServer.server;
 
-import org.MurmurRelay.relay.MurmurRelay;
+import org.MurmurRelay.relay.ServerListener;
 import org.MurmurServer.model.ApplicationData;
 import org.MurmurServer.model.Json;
 import org.MurmurServer.model.Protocol;

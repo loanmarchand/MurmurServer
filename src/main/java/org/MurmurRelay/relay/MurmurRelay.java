@@ -73,8 +73,12 @@ public class MurmurRelay {
 
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
-                String decryptedMessage = aesUtils.decrypt(inputLine.getBytes(), aesUtils.decodeKey(domainKeyMap.get(domain)));
-                String destinationDomain = getDestinationDomainFromMessage(decryptedMessage);
+                System.out.println("Received message from " + domain + ": " + inputLine);
+                System.out.println(domainKeyMap.get(domain));
+                String decryptedMessage = aesUtils.decrypt(inputLine, domainKeyMap.get(domain));
+                String destinationDomain = protocol.getDestinationDomainFromMessage(decryptedMessage);
+                System.out.println("Received message from " + domain + " for " + destinationDomain + ": " + decryptedMessage);
+                System.out.println(inputLine);
 
                 if (connectedServers.containsKey(destinationDomain)) {
                     String encryptedMessage = aesUtils.encrypt(decryptedMessage, domainKeyMap.get(destinationDomain));
@@ -95,11 +99,6 @@ public class MurmurRelay {
             connectedServers.remove(domain);
         }
     }
-
-    private String getDestinationDomainFromMessage(String message) {
-        return message;
-        }
-
 
     public static void main(String[] args) throws IOException {
         int relayPort = 23515;
