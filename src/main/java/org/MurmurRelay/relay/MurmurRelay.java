@@ -63,7 +63,6 @@ public class MurmurRelay {
                         new Thread(() -> handleServerCommunication(serverSocket, domain)).start();
                     }
                 }
-
             }
         }
     }
