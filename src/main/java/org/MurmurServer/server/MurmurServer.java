@@ -33,20 +33,40 @@ public class MurmurServer {
     ServerSocket serverSocket;
     Socket relayClient;
 
+    /**
+     * Le constructeur de la classe MurmurServer.
+     * Il initialise les serveur et écoute les connexions entrantes des clients et du relay.
+     * @param port Le numéro de port sur lequel le serveur écoutera les connexions entrantes.
+     *
+     * @throws IOException Si une erreur se produit lors de la créations du serveur.
+     */
     public MurmurServer(int port) throws IOException {
+        // Initialise la liste des clients et le pool de threads pour gérer les clients connectés.
         clientList = Collections.synchronizedList(new ArrayList<>());
         SSLServerSocket server;
 
+        // Initialise les objets Json et Protocol pour gérer les messages et la communication.
         json = new Json();
         protocol = new Protocol();
+
+        // Créer un pool de threads pour gérer les connexion du clients.
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        // Configure les propriétés SSL pour le serveur.
         System.setProperty("javax.net.ssl.keyStore", "src/main/resources/star.godswila.guru.p12");
         System.setProperty("javax.net.ssl.keyStorePassword", "labo2023");
+
+        // Créer un serveur SSL.
         SSLServerSocketFactory serverScocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
         server = (SSLServerSocket) serverScocketFactory.createServerSocket(port);
+
+        // Créer un ServeurSocket pour gérer les connexion relay
         serverSocket = new ServerSocket(DEFAULT_RELAY_PORT);
+
+        // Envoie un message Echo au relay.
         sendEchoToRelay();
 
+        // Boucle infinie pour accepter les connexions entrantes des clients.
         while (true) {
 
             SSLSocket client = (SSLSocket) server.accept();

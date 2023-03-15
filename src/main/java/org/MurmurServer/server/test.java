@@ -45,7 +45,4 @@ public class test {
             System.out.println("Le groupe 2 : " + matcher.group(2));
         }
     }
-
-
-
 }

@@ -36,7 +36,7 @@ public class ServerListener implements Runnable{
         Protocol protocol = new Protocol();
         try {
             String message = in.readLine();
-            System.out.println(message);//TODO ICI QUE LE MESSAGE(CRYPTER) VIENT AU SERVER
+            System.out.println(message);
             while (message!=null){
                 String decrypt = aesUtils.decrypt(message, murmurServer.getSecretKey());
                 System.out.println(decrypt);
@@ -52,7 +52,7 @@ public class ServerListener implements Runnable{
                         commandServer = new CommandServer();
                         commandServer.followTagRelay(matcher.group(1),user,domain);
                     }
-                    //Gestion des messages
+                    // Gestion des messages
                     if (ligne.matches(protocol.getRxMessage())){
                         commandServer = new CommandServer();
                         // commandServer.sendMsg(ligne);//TODO : Envoyer le message au serveur + DEMANDER id
@@ -62,7 +62,7 @@ public class ServerListener implements Runnable{
 
 
             }
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
         }
 

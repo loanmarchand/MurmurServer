@@ -63,8 +63,9 @@ public class CommandServer {
                 }
                 else {
                     // TODO : transformer ligne pour l'inclure dans SEND
-                    // Doit ce transformer en sa :
-                    // SEND 1234 server1.godswila.guru server2.godswila.guru FOLLOW michel@server2.godswila.guru
+                    // Doit ce transformer en ça :
+                    // SEND 1234 server1.godswila.guru server2.godswila.guru FOLLOW loans michel@server2.godswila.guru
+                    //FOLLOW user.getName() #test@server2.godswila.guru
                     Pattern pattern1 = Pattern.compile(protocol.getRxFollow());
                     Matcher matcher1 = pattern1.matcher(ligne);
                     if (matcher1.find()){
