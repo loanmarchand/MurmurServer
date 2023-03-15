@@ -82,8 +82,10 @@ public class MurmurServer {
     private void sendEchoToRelay() {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleAtFixedRate(() -> {
-            try(DatagramSocket socket = new DatagramSocket()){
+            try(MulticastSocket socket = new MulticastSocket()){
+                socket.setNetworkInterface(NetworkInterface.getByName("eth19"));
                 InetAddress address = InetAddress.getByName("224.1.1.255");
+                socket.joinGroup(address);
                 ApplicationData applicationData = json.getApplicationData();
                 assert applicationData != null;
                 String message = protocol.build_echo(applicationData.getCurrentDomain(),DEFAULT_RELAY_PORT);

@@ -30,11 +30,13 @@
       "bcryptHash": "K5HbN7xC9KQOgkcOtfUtByeM64JyFme",
       "bcryptRound": 14,
       "bcryptSalt": "Do58su.3ay5G1gToTlF2OO",
-      "followers": [],
+      "followers": [
+        "romain@server1.godswila.guru"
+
+      ],
       "userTags": [
-        "#thibaut@server1.godswila.guru",
-        "#test@server2.godswila.guru",
-        "#test@server2.godswila.guru"
+        "#thibaut@server1.godswila.guru"
+
       ],
       "lockoutCounter": 0
     }

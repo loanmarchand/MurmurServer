@@ -6,10 +6,7 @@ import org.MurmurServer.model.Json;
 import org.MurmurServer.model.Protocol;
 
 import java.io.*;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
-import java.net.Socket;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +37,7 @@ public class MurmurRelay {
     private void listenForMulticastAnnouncements() throws IOException {
         try (MulticastSocket multicastSocket = new MulticastSocket(relayPort)) {
             InetAddress groupAddress = InetAddress.getByName("224.1.1.255");
+            multicastSocket.setNetworkInterface(NetworkInterface.getByName("eth19"));
             multicastSocket.joinGroup(groupAddress);
 
             while (true) {
@@ -48,6 +46,7 @@ public class MurmurRelay {
                 multicastSocket.receive(packet);
 
                 String message = new String(packet.getData(), 0, packet.getLength(), StandardCharsets.UTF_8);
+                System.out.println("Received message: " + message);
 
                 Pattern pattern = Pattern.compile(protocol.getRxEcho());
                 Matcher matcher = pattern.matcher(message);

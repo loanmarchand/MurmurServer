@@ -36,7 +36,7 @@ public class ServerListener implements Runnable{
         Protocol protocol = new Protocol();
         try {
             String message = in.readLine();
-            System.out.println(message);
+            System.out.println(message);//TODO ICI QUE LE MESSAGE(CRYPTER) VIENT AU SERVER
             while (message!=null){
                 String decrypt = aesUtils.decrypt(message, murmurServer.getSecretKey());
                 //TODO : vérifier que le message est bien SEND (protocol)
