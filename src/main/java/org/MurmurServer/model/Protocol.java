@@ -51,6 +51,7 @@ public class Protocol {
     private static final String MSGS = "MSGS <user> <message>\r\n";
     public static final String ECHO_MSG = "ECHO <domain> <port>\r\n";
     public static final String PARAM_MSG = "PARAM <round> <bcryptsel>\r\n";
+    public static final String FOLLOW_MSG = "FOLLOW <user>@<domain>";
     //"SEND 1234 server1.godswila.guru server2.godswila.guru FOLLOW michel@server2.godswila.guru\r\n";
 
 
@@ -150,6 +151,10 @@ public class Protocol {
             }
         }
         return null;
+    }
+
+    public String buildFollow(String user, String domain) {
+        return FOLLOW_MSG.replace("<user>", user).replace("<domain>", domain);
     }
 
 
