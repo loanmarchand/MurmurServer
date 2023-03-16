@@ -207,14 +207,16 @@ public class CommandServer {
         Matcher matcher2 = pattern.matcher(s);
         ApplicationData applicationData = json.getApplicationData();
         if (matcher.find() && matcher2.find()) {
-            String group = matcher2.group(1);
-
+            String group = matcher.group(1);
+            String group2 = matcher2.group(1);
             System.out.println(group);
             if (group.matches(protocol.getRxUserDomain())) {
                 Pattern pattern1 = Pattern.compile(protocol.getRxUserDomain());
                 Matcher matcher1 = pattern1.matcher(group);
-                if (matcher1.find()) {
-                    String domain = matcher1.group(4);
+                Pattern pattern3 = Pattern.compile(protocol.getRxUserDomain());
+                Matcher matcher3 = pattern1.matcher(group);
+                if (matcher1.find() && matcher3.find()) {
+                    String domain = matcher3.group(4);
                     String login = matcher1.group(2);
                     Utilisateur user1 = applicationData.getUser(login);
                     if (user1 != null) {
@@ -234,5 +236,6 @@ public class CommandServer {
                 }
             }
         }
+        json.sauvegarder(applicationData);
     }
 }
