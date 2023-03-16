@@ -201,12 +201,13 @@ public class CommandServer {
         json.sauvegarder(applicationData);
     }
 
-    public void sendFollowUser(String s, String user, MurmurServer murmurServer) {
+    public void sendFollowUser(String ligne,String s, String user, MurmurServer murmurServer) {
         Pattern pattern = Pattern.compile(protocol.getRxFollow());
-        Matcher matcher = pattern.matcher(s);
+        Matcher matcher = pattern.matcher(ligne);
+        Matcher matcher2 = pattern.matcher(s);
         ApplicationData applicationData = json.getApplicationData();
-        if (matcher.find()) {
-            String group = matcher.group(1);
+        if (matcher.find() && matcher2.find()) {
+            String group = matcher2.group(1);
 
             System.out.println(group);
             if (group.matches(protocol.getRxUserDomain())) {

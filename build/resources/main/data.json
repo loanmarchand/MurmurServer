@@ -18,15 +18,6 @@
       ],
       "userTags": [],
       "lockoutCounter": 0
-    },
-    {
-      "login": "thibaut",
-      "bcryptHash": "st/fLmPGStgBiSKW4UwoRISE2wfVKKm",
-      "bcryptRound": 14,
-      "bcryptSalt": "FCrO5eFXom2N9QuMDn9mle",
-      "followers": [],
-      "userTags": [],
-      "lockoutCounter": 0
     }
   ],
   "tags": []
