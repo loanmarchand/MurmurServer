@@ -49,7 +49,7 @@ public class Protocol {
     //REGEX de construction
 
     private static final String HELLO_MSG = "HELLO <domain> <random>\r\n";
-    private static final String MSGS = "MSGS <user> <message>\r\n";
+    private static final String MSGS_MSG = "MSGS <user> <message>\r\n";
     public static final String ECHO_MSG = "ECHO <domain> <port>\r\n";
     public static final String PARAM_MSG = "PARAM <round> <bcryptsel>\r\n";
     public static final String FOLLOW_MSG = "FOLLOW <user>@<domain>";
@@ -66,7 +66,7 @@ public class Protocol {
      * @return message formaté
      */
     public String createMessage(String utilisateur, String message) {
-        return MSGS.replace("<user>", utilisateur).replace("<message>", message);
+        return MSGS_MSG.replace("<user>", utilisateur).replace("<message>", message);
     }
 
     /**
@@ -156,6 +156,10 @@ public class Protocol {
 
     public String buildFollow(String user, String domain) {
         return FOLLOW_MSG.replace("<user>", user).replace("<domain>", domain);
+    }
+
+    public String buildMsg(String group) {
+        return MSG_MSG.replace("<group>", group);
     }
 
 
