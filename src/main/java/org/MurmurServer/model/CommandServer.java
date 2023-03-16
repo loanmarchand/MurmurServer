@@ -156,7 +156,7 @@ public class CommandServer {
                 Matcher matcher1 = pattern1.matcher(user);
                 if (matcher1.find()) {
                     String domain = matcher1.group(4);
-                    String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " MSGS " + usera + " " + matcher.group(1);
+                    String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " MSGS " + user + " " + matcher.group(1);
                     String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                     cryptedMessages.add(cryptedMessage);
                 }

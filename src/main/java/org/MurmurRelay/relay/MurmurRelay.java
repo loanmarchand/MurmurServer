@@ -76,6 +76,7 @@ public class MurmurRelay {
                 System.out.println(domainKeyMap.get(domain));
                 String decryptedMessage = aesUtils.decrypt(inputLine, domainKeyMap.get(domain));
                 String destinationDomain = protocol.getDestinationDomainFromMessage(decryptedMessage);
+                //SEND 1234 server1.godswila.guru server2.godswila.guru MSGS thibaut@server2.godswila.guru hjkhjk
                 System.out.println("Received message from " + domain + " for " + destinationDomain + ": " + decryptedMessage);
 
                 if (connectedServers.containsKey(destinationDomain)) {
