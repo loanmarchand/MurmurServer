@@ -76,10 +76,7 @@ public class ServerListener implements Runnable{
                     if (ligneMsg.matches(protocol.geRxMsgs())){
                         System.out.println("Message");
                         commandServer = new CommandServer();
-                        //ligne -> MSGS gfgfdgdf
-                        //MSG sdhfjdhfkj
-                        String msg = protocol.buildMsg(matcher.group(13));
-                        commandServer.sendMsg(msg, user, murmurServer);
+                        commandServer.sendMsg(protocol.buildMsg(matcher.group(13)), user, murmurServer);
                     }
                 }
 
