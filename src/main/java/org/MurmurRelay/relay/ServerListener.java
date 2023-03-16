@@ -40,7 +40,7 @@ public class ServerListener implements Runnable{
             while (message!=null){
                 String decrypt = aesUtils.decrypt(message, murmurServer.getSecretKey());
                 System.out.println(decrypt);
-                Pattern pattern = Pattern.compile(protocol.getRxSend());
+                Pattern pattern = Pattern.compile(protocol.getRxSend());//TODO : CHANGER ICI
                 Matcher matcher = pattern.matcher(decrypt);
                 if (matcher.find()) {
                     String ligne = matcher.group(10)+" "+matcher.group(13);
