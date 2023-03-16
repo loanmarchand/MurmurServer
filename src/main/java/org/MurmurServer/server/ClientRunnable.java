@@ -9,10 +9,8 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class ClientRunnable implements Runnable {
     private final Socket monClient;
@@ -124,7 +122,7 @@ public class ClientRunnable implements Runnable {
                 //Gestion des follows
                 if (ligne.matches(protocol.getRxFollow())){
                     commandServer = new CommandServer();
-                    commandServer.sendFollow(ligne,applicationData,user,controller);
+                    commandServer.sendFollow(ligne, user,controller);
                 }
                 //Gestion des messages
                 if (ligne.matches(protocol.getRxMessage())){

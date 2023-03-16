@@ -23,11 +23,13 @@ public class CommandServer {
         aesUtils = new AesUtils();
     }
 
-    public void sendFollow(String ligne,ApplicationData applicationData, Utilisateur user,MurmurServer controller) throws Exception {
+    public void sendFollow(String ligne, Utilisateur user, MurmurServer controller) throws Exception {
         Pattern pattern = Pattern.compile(protocol.getRxFollow());
         Matcher matcher = pattern.matcher(ligne);
+        ApplicationData applicationData = json.getApplicationData();
         if (matcher.find()){
             String group = matcher.group(1);
+
             System.out.println(group);
             if (group.matches(protocol.getRxUserDomain())){
                 List<String> followers = applicationData.getUser(user.getLogin()).getFollowers();
@@ -41,9 +43,10 @@ public class CommandServer {
                     //affiche les variables de appData
                     System.out.println(applicationData.getUser(user.getLogin()).getFollowers());
                 }
-            }
+            } //TODO : transformer ligne pour l'inclure dans SEND
             if (group.matches(protocol.getRxTagDomain())){
                 System.out.println("test");
+                String domain = matcher.group(2);
                 List<String> tags = applicationData.getUser(user.getLogin()).getUserTags();
                 tags.add(group);
                 applicationData.getUser(user.getLogin()).setUserTags(tags);
@@ -52,13 +55,13 @@ public class CommandServer {
                 for (Tag tag : tagList){
                     if (tag.getTag().equals(group)){
                         List<String> users = tag.getFollowers();
-                        users.add(user.getLogin()+"@"+applicationData.getCurrentDomain());
+                        users.add(user.getLogin()+"@"+ applicationData.getCurrentDomain());
                         tag.setFollowers(users);
                         i++;
                     }
                 }
-                if (i == 0 && protocol.matchesWithServDomain(group, applicationData.getCurrentDomain())){
-                    Tag newTag = new Tag(group, List.of(user.getLogin()+"@"+applicationData.getCurrentDomain()));
+                if (i == 0 && domain.equals(applicationData.getCurrentDomain())){
+                    Tag newTag = new Tag(group, List.of(user.getLogin()+"@"+ applicationData.getCurrentDomain()));
                     tagList.add(newTag);
                 }
                 else {
@@ -71,7 +74,7 @@ public class CommandServer {
                     if (matcher1.find()){
                         String groupe1 = matcher1.group(1);
                         String groupe2 = matcher1.group(2);
-                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + groupe2 + " Follow " + user.getLogin() + groupe1;
+                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + groupe2 + " FOLLOW " + user.getLogin()+ " " + groupe1;
                         String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                         controller.sendToRelay(cryptedMessage);
                     }
