@@ -1,5 +1,6 @@
 package org.MurmurServer.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -150,6 +151,8 @@ public class ApplicationData {
     public void addUser(Utilisateur user) {
         this.users.add(user);
     }
+
+
 }
 
 

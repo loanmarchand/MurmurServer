@@ -50,7 +50,7 @@ public class CommandServer {
                             System.out.println("Cet utilisateur n'existe pas");
                         }
                     } else {
-                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " FOLLOW " + user + " " + matcher1.group(1);
+                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " FOLLOW " + user+"@"+applicationData.getCurrentDomain()+" "+ user + " " + matcher1.group(1);
                         String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                         controller.sendToRelay(cryptedMessage);
                     }
@@ -87,7 +87,7 @@ public class CommandServer {
                     if (matcher1.find()) {
                         String groupe1 = matcher1.group(1);
                         String groupe2 = matcher1.group(3);
-                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + groupe2 + " FOLLOW " + user + " " + groupe1;
+                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + groupe2 + " FOLLOW " + user+"@"+applicationData.getCurrentDomain()+" "+user + " " + groupe1;
                         String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                         controller.sendToRelay(cryptedMessage);
                     }
@@ -158,7 +158,7 @@ public class CommandServer {
                 Matcher matcher1 = pattern1.matcher(user);
                 if (matcher1.find()) {
                     String domain = matcher1.group(4);
-                    String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " MSGS " + usera + " " + matcher.group(1);
+                    String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " MSGS " + usera+"@"+applicationData.getCurrentDomain() + " " +user +" " + matcher.group(1);
                     String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                     cryptedMessages.add(cryptedMessage);
                 }
@@ -246,6 +246,7 @@ public class CommandServer {
     }
 
     public void sendMsgRelay(String buildMsg, String username, MurmurServer murmurServer) {
+
 
 
     }
