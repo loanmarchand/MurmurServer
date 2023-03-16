@@ -41,7 +41,7 @@ public class Protocol {
     private static final String RX_SEND = "SEND" + RX_ESP + RX_ID_DOMAIN + RX_ESP + RX_DOMAIN + RX_ESP + "("+RX_DOMAIN+"|"+RX_TAG_DOMAIN+")" + RX_ESP + RX_MESSAGE_INTERNE + RX_CRLF;
 
 
-    private static final String RX_FOLLOW = "^FOLLOW\\s+(#?\\w+@([\\w\\.]+))$" + RX_CRLF;
+    private static final String RX_FOLLOW = "FOLLOW\\s+(#?\\w+@([\\w\\.]+))" + RX_CRLF;
     private static final String RX_MSG = "^MSG\\s+(.*)$" + RX_CRLF;
 
 

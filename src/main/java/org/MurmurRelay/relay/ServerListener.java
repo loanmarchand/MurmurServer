@@ -46,11 +46,25 @@ public class ServerListener implements Runnable{
                     String ligne = matcher.group(10)+" "+matcher.group(13);
                     String user = matcher.group(11);
                     String domain = matcher.group(2);
+                    System.out.println(ligne + " " + user + " " + domain);
                     if (ligne.matches(protocol.getRxFollow())){
-                        pattern = Pattern.compile(protocol.getRxFollow());
-                        matcher = pattern.matcher(ligne);
-                        commandServer = new CommandServer();
-                        commandServer.followTagRelay(matcher.group(1),user,domain);
+
+                        Pattern pattern1 = Pattern.compile(protocol.getRxFollow());
+                        Matcher matcher1 = pattern1.matcher(ligne);
+                        //Afficher tous les groupes
+                        if (matcher1.find()) {
+                            try {
+                                String tag = matcher1.group(2);
+                                commandServer = new CommandServer();
+                                commandServer.followTagRelay(matcher1.group(1),user,domain);
+                                System.out.println("Follow TAG");
+                            }catch (Exception e){
+                                commandServer = new CommandServer();
+                                commandServer.followTagRelay(matcher1.group(1),user,domain);
+                                System.out.println("Follow USER");
+                            }
+
+                        }
                     }
                     // Gestion des messages
                     if (ligne.matches(protocol.getRxMessage())){
@@ -59,7 +73,7 @@ public class ServerListener implements Runnable{
                     }
                 }
 
-
+                message = in.readLine();
 
             }
         } catch (Exception e){

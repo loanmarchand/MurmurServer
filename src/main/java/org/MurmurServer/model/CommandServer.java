@@ -32,17 +32,37 @@ public class CommandServer {
 
             System.out.println(group);
             if (group.matches(protocol.getRxUserDomain())){
-                List<String> followers = applicationData.getUser(user.getLogin()).getFollowers();
-                //vérifier si la liste contient déjà le follow
-                if (followers.contains(group)){
-                    System.out.println("Vous suivez déjà cet utilisateur");
+                Pattern pattern1 = Pattern.compile(protocol.getRxUserDomain());
+                Matcher matcher1 = pattern1.matcher(group);
+                if (matcher1.find()){
+                    String domain = matcher1.group(4);
+                    String login = matcher1.group(2);
+                    if (applicationData.getCurrentDomain().equals(domain)){
+                        Utilisateur user1 = applicationData.getUser(login);
+                        if (user1!=null){
+                            List<String> followers = applicationData.getUser(user1.getLogin()).getFollowers();
+                            if (followers.contains(group)){
+                                System.out.println("Vous suivez déjà cet utilisateur");
+                            }
+                            else {
+                                followers.add(user.getLogin()+"@"+domain);
+                                applicationData.getUser(user1.getLogin()).setFollowers(followers);
+                                //affiche les variables de appData
+                                System.out.println(applicationData.getUser(user1.getLogin()).getFollowers());
+                            }
+                        }
+                        else {
+                            System.out.println("Cet utilisateur n'existe pas");
+                        }
+                    }
+                    else {
+                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " FOLLOW " + user.getLogin()+ " " + matcher1.group(1);
+                        String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
+                        controller.sendToRelay(cryptedMessage);
+                    }
                 }
-                else {
-                    followers.add(group);
-                    applicationData.getUser(user.getLogin()).setFollowers(followers);
-                    //affiche les variables de appData
-                    System.out.println(applicationData.getUser(user.getLogin()).getFollowers());
-                }
+
+
             } //TODO : transformer ligne pour l'inclure dans SEND
             if (group.matches(protocol.getRxTagDomain())){
                 System.out.println("test");
@@ -73,7 +93,7 @@ public class CommandServer {
                     Matcher matcher1 = pattern1.matcher(ligne);
                     if (matcher1.find()){
                         String groupe1 = matcher1.group(1);
-                        String groupe2 = matcher1.group(2);
+                        String groupe2 = matcher1.group(3);
                         String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + groupe2 + " FOLLOW " + user.getLogin()+ " " + groupe1;
                         String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                         controller.sendToRelay(cryptedMessage);
