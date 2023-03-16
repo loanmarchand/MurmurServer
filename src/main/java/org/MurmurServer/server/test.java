@@ -14,10 +14,10 @@ public class test {
 
     public static void main(String[] args){
         String text;
-        Pattern pattern = Pattern.compile(protocol.getRxSend());
-        Matcher matcher = pattern.matcher("SEND 1234 server2.godswila.guru server1.godswila.guru MSGS loans@server1.godswila.guru Test");
+        Pattern pattern = Pattern.compile(protocol.getRxUserDomain());
+        Matcher matcher = pattern.matcher("loans@server1.godswila.guru");
         if (matcher.find()){
-            for (int i = 0; i < matcher.groupCount(); i++) {
+            for (int i = 1; i <= matcher.groupCount(); i++) {
                 System.out.println(matcher.group(i) + " " + i);
             }
         }

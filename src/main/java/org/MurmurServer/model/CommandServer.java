@@ -116,7 +116,9 @@ public class CommandServer {
                 if (matcher1.find()) {
                     System.out.println("testa");
                     String domain = matcher1.group(4);
+                    System.out.println(domain);
                     if (domain.equals(applicationData.getCurrentDomain())) {
+                        System.out.println("testb");
                         usersToSend.add(user);
                     } else {
                         usersToSendRelay.add(user);

@@ -46,8 +46,9 @@ public class ServerListener implements Runnable{
                     String ligne = matcher.group(10)+" "+matcher.group(13);
                     String user = matcher.group(11);
                     String domain = matcher.group(2);
-                    String ligneMsg = matcher.group(10)+" "+user+" "+matcher.group(13);
+                    String ligneMsg = matcher.group(10)+" "+user+" "+matcher.group(19);
                     System.out.println(ligne + " " + user + " " + domain);
+                    System.out.println(ligneMsg);
                     if (ligne.matches(protocol.getRxFollow())){
 
                         Pattern pattern1 = Pattern.compile(protocol.getRxFollow());
@@ -76,7 +77,8 @@ public class ServerListener implements Runnable{
                     if (ligneMsg.matches(protocol.geRxMsgs())){
                         System.out.println("Message");
                         commandServer = new CommandServer();
-                        commandServer.sendMsg(protocol.buildMsg(matcher.group(19)), user, murmurServer);
+                        String username = protocol.getUSernameFromUserDomain(user);
+                        commandServer.sendMsg(protocol.buildMsg(matcher.group(19)), username, murmurServer);
                     }
                 }
 
