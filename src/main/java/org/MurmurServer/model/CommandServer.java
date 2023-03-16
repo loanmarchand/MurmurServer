@@ -156,17 +156,16 @@ public class CommandServer {
                 Matcher matcher1 = pattern1.matcher(user);
                 if (matcher1.find()) {
                     String domain = matcher1.group(4);
-                    domains.add(domain);
+                    String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " MSGS " + usera + " " + matcher.group(1);
+                    String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
+                    cryptedMessages.add(cryptedMessage);
                 }
             }
-            //Nettoyage des doublons de domaines
-            Set<String> set = new HashSet<>(domains);
-            domains.clear();
-            domains.addAll(set);
-            //Envoi des messages
-            for (String domain : domains) {
-                String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " MSGS " + usera + " " + matcher.group(1);
-                String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
+            //Nettoyage des doublons de cryptedMessages
+            Set<String> hs = new HashSet<>(cryptedMessages);
+            cryptedMessages.clear();
+            cryptedMessages.addAll(hs);
+            for (String cryptedMessage : cryptedMessages) {
                 controller.sendToRelay(cryptedMessage);
             }
 
