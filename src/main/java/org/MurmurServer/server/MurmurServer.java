@@ -66,17 +66,27 @@ public class MurmurServer {
 
         // Envoie un message Echo au relay.
         sendEchoToRelay();
-        Thread clientConnectionThread = new Thread(this::clientConnectionLoop);
-        Thread relayConnectionThread = new Thread(this::relayConnectionLoop);
+
 
         // Boucle infinie pour accepter les connexions entrantes des clients.
-        try {
-            clientConnectionThread.join();
-            relayConnectionThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        while (true) {
 
+             new Thread(()->{
+                 try {
+                     startClientConnexion();
+                 }catch (Exception e){
+                     e.printStackTrace();
+                    }
+             }).start();
+
+            new Thread(()->{
+                try {
+                    startRelayConnexion();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
+        }
     }
 
 
@@ -88,26 +98,6 @@ public class MurmurServer {
         relayClient = serverSocket.accept();
         ServerListener serverListener = new ServerListener(relayClient, this);
         executorService.execute(serverListener);
-    }
-
-    private void clientConnectionLoop() {
-        while (true) {
-            try {
-                startClientConnexion();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void relayConnectionLoop() {
-        while (true) {
-            try {
-                startRelayConnexion();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 
