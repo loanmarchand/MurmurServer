@@ -43,6 +43,7 @@ public class Protocol {
 
     private static final String RX_FOLLOW = "FOLLOW\\s+(#?\\w+@([\\w\\.]+))" + RX_CRLF;
     private static final String RX_MSG = "^MSG\\s+(.*)$" + RX_CRLF;
+    private static final String RX_MSGS = "MSGS"+RX_ESP+RX_USERNAME+RX_ESP+"(.*)"+RX_CRLF;
 
 
     //REGEX de construction
@@ -52,6 +53,8 @@ public class Protocol {
     public static final String ECHO_MSG = "ECHO <domain> <port>\r\n";
     public static final String PARAM_MSG = "PARAM <round> <bcryptsel>\r\n";
     public static final String FOLLOW_MSG = "FOLLOW <user>@<domain>";
+    public static final String MSG_MSG = "MSG <group>";
+
     //"SEND 1234 server1.godswila.guru server2.godswila.guru FOLLOW michel@server2.godswila.guru\r\n";
 
 
@@ -197,4 +200,8 @@ public class Protocol {
     }
 
     public String getRxSend() { return RX_SEND; }
+
+    public String geRxMsgs() {
+        return RX_MSGS;
+    }
 }
