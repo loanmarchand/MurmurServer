@@ -6,48 +6,28 @@
   "unicastPort": 22510,
   "relayPort": 22510,
   "networkInterface": "eth12",
-  "base64AES": "lI15WMg00OBNOWcgmeG4qSqFw340fnMuoxogpb+So5Q=",
+  "base64AES": "rpVAtjuNV4gm2zfN6Q9wgggsjwgmnMVKU1kcqL4zn2w\u003d",
   "tls": true,
   "users": [
     {
-      "login": "romain",
-      "bcryptHash": "v/qIfGLixLVPquiRORHmz1k11Kzt652",
+      "login": "loans",
+      "bcryptHash": "6ylxfOWaEDKL.UwShXDH5Mel/Pg9B/m",
       "bcryptRound": 14,
-      "bcryptSalt": "iwjndzdR1srbPzexp75JgO",
-      "followers": [],
-      "userTags": [
-        "#thibaut@server1.godswila.guru",
-        "#retttag@server2.godswila.guru",
-        "#akldja@server2.godswila.guru",
-        "#akldjada@server2.godswila.guru",
-        "#akldezaaaja@server2.godswila.guru",
-        "#aklddtrhhtrthhthrtrhja@server2.godswila.guru"
+      "bcryptSalt": "FvE0blSZ2ORshqb2/UNa/u",
+      "followers": [
       ],
+      "userTags": [],
       "lockoutCounter": 0
     },
     {
       "login": "thibaut",
-      "bcryptHash": "K5HbN7xC9KQOgkcOtfUtByeM64JyFme",
+      "bcryptHash": "st/fLmPGStgBiSKW4UwoRISE2wfVKKm",
       "bcryptRound": 14,
-      "bcryptSalt": "Do58su.3ay5G1gToTlF2OO",
-      "followers": [
-        "romain@server1.godswila.guru"
-
-      ],
-      "userTags": [
-        "#thibaut@server1.godswila.guru"
-
-      ],
+      "bcryptSalt": "FCrO5eFXom2N9QuMDn9mle",
+      "followers": [],
+      "userTags": [],
       "lockoutCounter": 0
     }
   ],
-  "tags": [
-    {
-      "tag": "#thibaut@server1.godswila.guru",
-      "followers": [
-        "thibaut@server1.godswila.guru",
-        "romain@server1.godswila.guru"
-      ]
-    }
-  ]
+  "tags": []
 }
