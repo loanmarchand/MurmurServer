@@ -53,7 +53,6 @@ public class Protocol {
     public static final String ECHO_MSG = "ECHO <domain> <port>\r\n";
     public static final String PARAM_MSG = "PARAM <round> <bcryptsel>\r\n";
     public static final String FOLLOW_MSG = "FOLLOW <user>@<domain>";
-    public static final String MSG_MSG = "MSG <group>";
 
     //"SEND 1234 server1.godswila.guru server2.godswila.guru FOLLOW michel@server2.godswila.guru\r\n";
 
@@ -158,9 +157,6 @@ public class Protocol {
         return FOLLOW_MSG.replace("<user>", user).replace("<domain>", domain);
     }
 
-    public String buildMsg(String group) {
-        return MSG_MSG.replace("<group>", group);
-    }
 
 
     public String getRxRegister() {

@@ -78,7 +78,7 @@ public class ServerListener implements Runnable{
                         System.out.println("Message");
                         commandServer = new CommandServer();
                         String username = protocol.getUSernameFromUserDomain(user);
-                        commandServer.sendMsg(protocol.buildMsg(matcher.group(19)), username, murmurServer);
+                        commandServer.sendMsgRelay(matcher.group(19), username, murmurServer);
                     }
                 }
 
