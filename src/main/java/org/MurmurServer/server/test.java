@@ -15,13 +15,11 @@ public class test {
     public static void main(String[] args){
         String text;
         Pattern pattern = Pattern.compile(protocol.getRxSend());
-        Matcher matcher = pattern.matcher("SEND 1234 server1.godswila.guru #dad@server2.godswila.guru MSGS thibaut@server2.godswila.guru hjkhjk");
-        if (matcher.find()) {
-            text = matcher.group(5);
-            if (text == null) {
-                text = matcher.group(8);
+        Matcher matcher = pattern.matcher("SEND 1234 server2.godswila.guru server1.godswila.guru MSGS loans@server1.godswila.guru Test");
+        if (matcher.find()){
+            for (int i = 0; i < matcher.groupCount(); i++) {
+                System.out.println(matcher.group(i) + " " + i);
             }
-            System.out.println(text);
         }
         /*KeyGenerator keyGenerator = null;
         try {
