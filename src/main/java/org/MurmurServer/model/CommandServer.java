@@ -4,10 +4,7 @@ import org.MurmurRelay.utils.AesUtils;
 import org.MurmurServer.server.ClientRunnable;
 import org.MurmurServer.server.MurmurServer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,7 +20,7 @@ public class CommandServer {
         aesUtils = new AesUtils();
     }
 
-    public void sendFollow(String ligne, Utilisateur user, MurmurServer controller) throws Exception {
+    public void sendFollow(String ligne, String user, MurmurServer controller) throws Exception {
         Pattern pattern = Pattern.compile(protocol.getRxFollow());
         Matcher matcher = pattern.matcher(ligne);
         ApplicationData applicationData = json.getApplicationData();
@@ -45,7 +42,7 @@ public class CommandServer {
                                 System.out.println("Vous suivez déjà cet utilisateur");
                             }
                             else {
-                                followers.add(user.getLogin()+"@"+domain);
+                                followers.add(user+"@"+domain);
                                 applicationData.getUser(user1.getLogin()).setFollowers(followers);
                                 //affiche les variables de appData
                                 System.out.println(applicationData.getUser(user1.getLogin()).getFollowers());
@@ -56,7 +53,7 @@ public class CommandServer {
                         }
                     }
                     else {
-                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " FOLLOW " + user.getLogin()+ " " + matcher1.group(1);
+                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " FOLLOW " + user+ " " + matcher1.group(1);
                         String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                         controller.sendToRelay(cryptedMessage);
                     }
@@ -67,21 +64,21 @@ public class CommandServer {
             if (group.matches(protocol.getRxTagDomain())){
                 System.out.println("test");
                 String domain = matcher.group(2);
-                List<String> tags = applicationData.getUser(user.getLogin()).getUserTags();
+                List<String> tags = applicationData.getUser(user).getUserTags();
                 tags.add(group);
-                applicationData.getUser(user.getLogin()).setUserTags(tags);
+                applicationData.getUser(user).setUserTags(tags);
                 List<Tag> tagList = applicationData.getTags();
                 int i = 0;
                 for (Tag tag : tagList){
                     if (tag.getTag().equals(group)){
                         List<String> users = tag.getFollowers();
-                        users.add(user.getLogin()+"@"+ applicationData.getCurrentDomain());
+                        users.add(user+"@"+ applicationData.getCurrentDomain());
                         tag.setFollowers(users);
                         i++;
                     }
                 }
                 if (i == 0 && domain.equals(applicationData.getCurrentDomain())){
-                    Tag newTag = new Tag(group, List.of(user.getLogin()+"@"+ applicationData.getCurrentDomain()));
+                    Tag newTag = new Tag(group, List.of(user+"@"+ applicationData.getCurrentDomain()));
                     tagList.add(newTag);
                 }
                 else {
@@ -94,7 +91,7 @@ public class CommandServer {
                     if (matcher1.find()){
                         String groupe1 = matcher1.group(1);
                         String groupe2 = matcher1.group(3);
-                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + groupe2 + " FOLLOW " + user.getLogin()+ " " + groupe1;
+                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + groupe2 + " FOLLOW " + user+ " " + groupe1;
                         String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                         controller.sendToRelay(cryptedMessage);
                     }
@@ -104,83 +101,92 @@ public class CommandServer {
         }
     }
 
-    public void sendMsg(String ligne, Utilisateur usera,MurmurServer controller,ClientRunnable clientRunnable) throws Exception {
+    public void sendMsg(String ligne, String usera,MurmurServer controller) throws Exception {
         ApplicationData applicationData = json.getApplicationData();
 
         Pattern pattern = Pattern.compile(protocol.getRxMessage());
         Matcher matcher = pattern.matcher(ligne);
-        if(matcher.find()){
-            String group1 = matcher.group(1);
-            //Chercher dans les users si il y en a un qui a l'utilisateur comme follower
-            List<Utilisateur> users = applicationData.getUsers();
-            List<Utilisateur> usersToBroadcast = new ArrayList<>();
-            Map<Utilisateur,String> usersToSendRelay = new HashMap<>();
-            for (String follower:usera.getFollowers()){
+        List<String> usersToSend = new ArrayList<>();
+        List<String> usersToSendRelay = new ArrayList<>();
+        List<String> tagsToSend = new ArrayList<>();
+        if(matcher.find()) {
+            List<String> users = applicationData.getUser(usera).getFollowers();
+            for (String user : users) {
                 Pattern pattern1 = Pattern.compile(protocol.getRxUserDomain());
-                Matcher matcher1 = pattern1.matcher(follower);
-                if (matcher1.find()){
-                    String group = matcher1.group(1);
-                    String domain = matcher1.group(2);
-                    if (protocol.matchesWithServDomain(domain, applicationData.getCurrentDomain())){
-                        usersToBroadcast.add(json.getUser(group));
+                Matcher matcher1 = pattern1.matcher(user);
+                if (matcher.find()){
+                    String domain = matcher1.group(4);
+                    if (domain.equals(applicationData.getCurrentDomain())){
+                        usersToSend.add(user);
                     }
                     else {
-                        usersToSendRelay.put(json.getUser(group),domain);
+                        usersToSendRelay.add(user);
                     }
-                }
 
+                }
             }
-            //Récuperer les tags de l'user et verifier dans les tags si il y en a un qui a le tag comme follower
-            List<String> tags = usera.getUserTags();
+            List<String> tags = applicationData.getUser(usera).getUserTags();
             for (String tag : tags){
                 Pattern pattern1 = Pattern.compile(protocol.getRxTagDomain());
                 Matcher matcher1 = pattern1.matcher(tag);
                 if (matcher1.find()){
                     String domain = matcher1.group(2);
-                    if(protocol.matchesWithServDomain(domain, applicationData.getCurrentDomain())){
-                        for (Tag tag1 : applicationData.getTags()){
-                            if (tag.equals(tag1.getTag())){
-                                for (String follower : tag1.getFollowers()){
-                                    Pattern pattern2 = Pattern.compile(protocol.getRxUserDomain());
-                                    Matcher matcher3 = pattern1.matcher(follower);
-                                    if (matcher1.find()){
-                                        String group = matcher1.group(1);
-                                        String domains = matcher1.group(2);
-                                        if (protocol.matchesWithServDomain(domains, applicationData.getCurrentDomain())){
-                                            usersToBroadcast.add(json.getUser(group));
-                                        }
-                                        else {
-                                            usersToSendRelay.put(json.getUser(group),domains);
-                                        }
-                                    }
-                                }
+                    if (domain.equals(applicationData.getCurrentDomain())){
+                        List<Tag> tagList = applicationData.getTags();
+                        for (Tag tag1 : tagList){
+                            if (tag1.getTag().equals(tag)){
+                                List<String> users1 = tag1.getFollowers();
+                                usersToSend.addAll(users1);
                             }
                         }
+
                     }
-                    else {
-                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + tag + " MSGS " + usera.getLogin() + group1;
-                        String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
-                        controller.sendToRelay(cryptedMessage);
+                    else{
+                        tagsToSend.add(tag);
                     }
                 }
-
             }
 
-            //Vérifier qu'un utilisateur n'est pas dans la liste 2 fois
-            usersToBroadcast = usersToBroadcast.stream().distinct().collect(Collectors.toList());
-            usersToSendRelay = usersToSendRelay.entrySet().stream().distinct().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            //afficher les users qui vont recevoir le message
-            for (Utilisateur user : usersToBroadcast){
-                System.out.println(user.getLogin());
+            controller.broadcastToAllClients(usersToSend,protocol.createMessage(usera,matcher.group(1)));
+
+            List<String> cryptedMessages = new ArrayList<>();
+            //Construction message send followers
+            List<String> domains = new ArrayList<>();
+            for (String user : usersToSendRelay){
+                Pattern pattern1 = Pattern.compile(protocol.getRxUserDomain());
+                Matcher matcher1 = pattern1.matcher(user);
+                if (matcher1.find()){
+                    String domain = matcher1.group(4);
+                    domains.add(domain);
+                }
             }
-            controller.broadcastToAllClientsExceptMe(usersToBroadcast, protocol.createMessage(usera.getLogin()+"@"+applicationData.getCurrentDomain(), group1), clientRunnable);
-            for (Map.Entry<Utilisateur,String> entry : usersToSendRelay.entrySet()){
-                String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + entry.getValue() + " MSGS " + usera.getLogin() + group1;
+            //Nettoyage des doublons de domaines
+            Set<String> set = new HashSet<>(domains);
+            domains.clear();
+            domains.addAll(set);
+            //Envoi des messages
+            for (String domain : domains){
+                String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " MSGS " + usera + " " + matcher.group(1);
                 String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                 controller.sendToRelay(cryptedMessage);
             }
+
+            //Construction message send tags
+            List<String> domains1 = new ArrayList<>();
+            for (String tag : tagsToSend){
+                Pattern pattern1 = Pattern.compile(protocol.getRxTagDomain());
+                Matcher matcher1 = pattern1.matcher(tag);
+                if (matcher1.find()){
+                    String domain = matcher1.group(2);
+                    domains1.add(domain);
+                }
+            }
+
+            }
+
+
         }
-    }
+
 
     public void followTagRelay(String ligne, String user, String domain) {
         ApplicationData applicationData = json.getApplicationData();

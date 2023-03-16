@@ -55,13 +55,18 @@ public class ServerListener implements Runnable{
                         if (matcher1.find()) {
                             try {
                                 String tag = matcher1.group(2);
-                                commandServer = new CommandServer();
-                                commandServer.followTagRelay(matcher1.group(1),user,domain);
-                                System.out.println("Follow TAG");
+                                if (tag.equals("#")){
+                                    commandServer = new CommandServer();
+                                    commandServer.followTagRelay(matcher1.group(1),user,domain);
+                                    System.out.println("Follow TAG");
+                                }
+                                else {
+                                    commandServer = new CommandServer();
+                                    commandServer.sendFollow(ligne, user, murmurServer);
+                                    System.out.println("Follow USER");
+                                }
                             }catch (Exception e){
-                                commandServer = new CommandServer();
-                                commandServer.followTagRelay(matcher1.group(1),user,domain);
-                                System.out.println("Follow USER");
+                                e.printStackTrace();
                             }
 
                         }
@@ -69,7 +74,7 @@ public class ServerListener implements Runnable{
                     // Gestion des messages
                     if (ligne.matches(protocol.getRxMessage())){
                         commandServer = new CommandServer();
-                        // commandServer.sendMsg(ligne);//TODO : Envoyer le message au serveur + DEMANDER id
+                        commandServer.sendMsg(ligne, user, murmurServer);
                     }
                 }
 

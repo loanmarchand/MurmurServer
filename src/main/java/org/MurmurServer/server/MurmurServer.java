@@ -31,7 +31,9 @@ public class MurmurServer {
     private final Json json;
     private final Protocol protocol;
     ServerSocket serverSocket;
+    SSLSocket client;
     Socket relayClient;
+    SSLServerSocket server;
 
     /**
      * Le constructeur de la classe MurmurServer.
@@ -43,7 +45,6 @@ public class MurmurServer {
     public MurmurServer(int port) throws IOException {
         // Initialise la liste des clients et le pool de threads pour gérer les clients connectés.
         clientList = Collections.synchronizedList(new ArrayList<>());
-        SSLServerSocket server;
 
         // Initialise les objets Json et Protocol pour gérer les messages et la communication.
         json = new Json();
@@ -69,10 +70,13 @@ public class MurmurServer {
         // Boucle infinie pour accepter les connexions entrantes des clients.
         while (true) {
 
-            SSLSocket client = (SSLSocket) server.accept();
-            ClientRunnable runnable = new ClientRunnable(client, this);
-            clientList.add(runnable);
-            executorService.execute(runnable);
+             new Thread(()->{
+                 try {
+                     startClientConnexion();
+                 }catch (Exception e){
+                     e.printStackTrace();
+                    }
+             }).start();
 
             new Thread(()->{
                 try {
@@ -123,10 +127,13 @@ public class MurmurServer {
     }
 
 
-    public void broadcastToAllClientsExceptMe(List<Utilisateur> me, String message, ClientRunnable clientRunnable) {
-        clientList.stream()
-                .filter(client -> me.contains(client.getUser()) && client != clientRunnable)
-                .forEach(client -> client.sendMessage(message));
+    public void broadcastToAllClients(List<String> me, String message) {
+        for (ClientRunnable client : clientList) {
+            if (!me.contains(client.getUser().getLogin()+"@"+ json.getApplicationData().getCurrentDomain())) {
+                client.sendMessage(message);
+            }
+        }
+
     }
 
     public static void main(String[] args) throws IOException {
@@ -150,4 +157,12 @@ public class MurmurServer {
         }
 
     }
-}
+
+
+    private void startClientConnexion() throws IOException {
+        client= (SSLSocket) server.accept();
+        ClientRunnable runnable = new ClientRunnable(client, this);
+        clientList.add(runnable);
+        executorService.execute(runnable);
+    }
+    }
