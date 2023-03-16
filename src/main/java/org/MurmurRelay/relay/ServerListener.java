@@ -62,7 +62,7 @@ public class ServerListener implements Runnable{
                                 }
                                 else {
                                     commandServer = new CommandServer();
-                                    commandServer.sendFollowUser(ligne,protocol.buildFollow(user,domain), user, murmurServer);
+                                    commandServer.sendFollowUser(ligne,protocol.buildFollow(user,domain), user);
                                     System.out.println("Follow USER");
                                 }
                             }catch (Exception e){
@@ -73,6 +73,7 @@ public class ServerListener implements Runnable{
                     }
                     // Gestion des messages
                     if (ligne.matches(protocol.getRxMessage())){
+                        System.out.println("Message");
                         commandServer = new CommandServer();
                         commandServer.sendMsg(ligne, user, murmurServer);
                     }

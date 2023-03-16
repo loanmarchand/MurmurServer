@@ -15,10 +15,21 @@
       "bcryptRound": 14,
       "bcryptSalt": "FvE0blSZ2ORshqb2/UNa/u",
       "followers": [
+        "thibaut@server2.godswila.guru"
       ],
-      "userTags": [],
+      "userTags": [
+        "#test@server1.godswila.guru",
+        "#test2@server2.godswila.guru"
+      ],
       "lockoutCounter": 0
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "tag": "#test@server1.godswila.guru",
+      "followers": [
+        "loans@server1.godswila.guru"
+      ]
+    }
+  ]
 }

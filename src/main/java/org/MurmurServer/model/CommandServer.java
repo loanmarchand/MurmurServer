@@ -105,17 +105,22 @@ public class CommandServer {
         List<String> usersToSend = new ArrayList<>();
         List<String> usersToSendRelay = new ArrayList<>();
         List<String> tagsToSend = new ArrayList<>();
+        System.out.println(ligne);
         if (matcher.find()) {
+            System.out.println("test");
             List<String> users = applicationData.getUser(usera).getFollowers();
             for (String user : users) {
+                System.out.println(user);
                 Pattern pattern1 = Pattern.compile(protocol.getRxUserDomain());
                 Matcher matcher1 = pattern1.matcher(user);
-                if (matcher.find()) {
+                if (matcher1.find()) {
+                    System.out.println("testa");
                     String domain = matcher1.group(4);
                     if (domain.equals(applicationData.getCurrentDomain())) {
                         usersToSend.add(user);
                     } else {
                         usersToSendRelay.add(user);
+
                     }
 
                 }
@@ -201,7 +206,7 @@ public class CommandServer {
         json.sauvegarder(applicationData);
     }
 
-    public void sendFollowUser(String ligne,String s, String user, MurmurServer murmurServer) {
+    public void sendFollowUser(String ligne,String s, String user) {
         Pattern pattern = Pattern.compile(protocol.getRxFollow());
         Matcher matcher = pattern.matcher(ligne);
         Matcher matcher2 = pattern.matcher(s);
@@ -214,7 +219,7 @@ public class CommandServer {
                 Pattern pattern1 = Pattern.compile(protocol.getRxUserDomain());
                 Matcher matcher1 = pattern1.matcher(group);
                 Pattern pattern3 = Pattern.compile(protocol.getRxUserDomain());
-                Matcher matcher3 = pattern1.matcher(group);
+                Matcher matcher3 = pattern3.matcher(group2);
                 if (matcher1.find() && matcher3.find()) {
                     String domain = matcher3.group(4);
                     String login = matcher1.group(2);
