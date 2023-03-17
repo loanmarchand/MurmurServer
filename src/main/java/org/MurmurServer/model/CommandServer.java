@@ -215,13 +215,8 @@ public class CommandServer {
 
 
     public void followTagRelay(String ligne, String user) {
-        Pattern pattern = Pattern.compile(protocol.getRxFollow());
-        Matcher matcher = pattern.matcher(ligne);
-        String group="";
-        if (matcher.find()) {
-            group = matcher.group(1);
-
-        }
+        System.out.println(ligne);
+        System.out.println(user);
         ApplicationData applicationData = json.getApplicationData();
         List<Tag> tagList = applicationData.getTags();
         int i = 0;

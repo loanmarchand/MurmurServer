@@ -56,7 +56,7 @@ public class ServerListener implements Runnable{
                             try {
                                 if (decrypt.contains("#")){
                                     commandServer = new CommandServer();
-                                    commandServer.followTagRelay(ligneFollow,user+"@"+domain);
+                                    commandServer.followTagRelay("#"+matcher.group(11)+"@"+domain,matcher.group(10)+"@"+matcher.group(2));
                                     System.out.println("Follow TAG");
                                 }
                                 else {
