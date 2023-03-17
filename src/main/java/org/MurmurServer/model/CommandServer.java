@@ -260,9 +260,10 @@ public class CommandServer {
                 i++;
             }
         }
-        if (i == 0 && protocol.matchesWithServDomain(ligne, applicationData.getCurrentDomain())) {
+        if (i == 0) {
             Tag newTag = new Tag(ligne, List.of(user));
             tagList.add(newTag);
+            applicationData.setTags(tagList);
         }
         json.sauvegarder(applicationData);
     }

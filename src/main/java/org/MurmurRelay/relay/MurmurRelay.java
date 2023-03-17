@@ -37,7 +37,7 @@ public class MurmurRelay {
     private void listenForMulticastAnnouncements() throws IOException {
         try (MulticastSocket multicastSocket = new MulticastSocket(relayPort)) {
             InetAddress groupAddress = InetAddress.getByName("224.1.1.255");
-            multicastSocket.setNetworkInterface(NetworkInterface.getByName("eth19"));
+            multicastSocket.setNetworkInterface(NetworkInterface.getByName("eth5"));
             multicastSocket.joinGroup(groupAddress);
 
             while (true) {

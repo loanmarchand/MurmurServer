@@ -11,38 +11,14 @@
   "users": [
     {
       "login": "loans",
-      "bcryptHash": "Db.hBk1749512nU2eolwfPrr9Lwhdaa",
+      "bcryptHash": "o7LhO/5fjKkArHPiTOI03dDeiKHDYbO",
       "bcryptRound": 14,
-      "bcryptSalt": "TYqgtwNWy0ugGeZ7IcuJme",
+      "bcryptSalt": "P3ZpihZbAUC0hpxf8B4rF.",
       "followers": [
-        "romain@server1.godswila.guru"
       ],
-      "userTags": [
-        "#test@server1.godswila.guru"
-      ],
-      "lockoutCounter": 0
-    },
-    {
-      "login": "romain",
-      "bcryptHash": "buwBEZvFdo0DtPXhbkUvuZ0GmT0jKhe",
-      "bcryptRound": 14,
-      "bcryptSalt": "FxZm2oZ1ofYowY7TR0Bt..",
-      "followers": [
-        "loans@server1.godswila.guru"
-      ],
-      "userTags": [
-        "#test@server1.godswila.guru"
-      ],
+      "userTags": [],
       "lockoutCounter": 0
     }
   ],
-  "tags": [
-    {
-      "tag": "#test@server1.godswila.guru",
-      "followers": [
-        "romain@server1.godswila.guru",
-        "loans@server1.godswila.guru"
-      ]
-    }
-  ]
+  "tags": []
 }

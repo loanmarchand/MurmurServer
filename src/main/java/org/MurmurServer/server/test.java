@@ -13,8 +13,8 @@ public class test {
     private static final Protocol protocol = new Protocol();
 
     public static void main(String[] args){
-        String text = "romain@server2.godswila.guru";
-        Pattern pattern = Pattern.compile(protocol.getRxUserDomain());
+        String text = "SEND 1234 server2.godswila.guru server1.godswila.guru FOLLOW thibaut loans@server1.godswila.guru";
+        Pattern pattern = Pattern.compile(protocol.getRxSend());
         Matcher matcher = pattern.matcher(text);
         System.out.println(text);
         if (matcher.find()){

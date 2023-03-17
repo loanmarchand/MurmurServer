@@ -47,7 +47,7 @@ public class ServerListener implements Runnable{
                     String ligneFollow = matcher.group(9)+" "+matcher.group(11)+"@"+matcher.group(2);
                     String ligneMsg = matcher.group(9);
                     if (ligneFollow.matches(protocol.getRxFollow())){
-                        String user = matcher.group(12);
+                        String user = matcher.group(11);
                         String domain = matcher.group(4);
                         Pattern pattern1 = Pattern.compile(protocol.getRxFollow());
                         Matcher matcher1 = pattern1.matcher(ligneFollow);
@@ -61,7 +61,7 @@ public class ServerListener implements Runnable{
                                 }
                                 else {
                                     commandServer = new CommandServer();
-                                    commandServer.sendFollowUser(ligneFollow,user);
+                                    commandServer.sendFollowUser("FOLLOW "+matcher.group(10)+"@"+matcher.group(2),user);
                                     System.out.println("Follow USER");
                                 }
                             }catch (Exception e){

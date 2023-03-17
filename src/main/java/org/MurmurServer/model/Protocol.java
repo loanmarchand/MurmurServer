@@ -221,4 +221,8 @@ public class Protocol {
     public String getMessageIntern() {
         return RX_MESSAGE_INTERNE;
     }
+
+    public boolean matchesWithServDomainTAG(String ligne, String currentDomain) {
+        return false;
+    }
 }
