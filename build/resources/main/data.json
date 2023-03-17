@@ -8,6 +8,19 @@
   "networkInterface": "eth12",
   "base64AES": "rpVAtjuNV4gm2zfN6Q9wgggsjwgmnMVKU1kcqL4zn2w\u003d",
   "tls": true,
-  "users": [],
+  "users": [
+    {
+      "login": "loans",
+      "bcryptHash": "uKVisNbGq6ZYYyaFYCyRnPZ4kJlqZhm",
+      "bcryptRound": 14,
+      "bcryptSalt": "PEhwhqXIHplqMqk7AlkTt.",
+      "followers": [],
+      "userTags": [
+        "#test29@server1.godswila.guru",
+        "#test2@server2.godswila.guru"
+      ],
+      "lockoutCounter": 0
+    }
+  ],
   "tags": []
 }

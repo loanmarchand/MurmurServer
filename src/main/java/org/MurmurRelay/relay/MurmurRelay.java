@@ -72,7 +72,6 @@ public class MurmurRelay {
 
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
-                System.out.println("Received message from " + domain + ": " + inputLine);
                 System.out.println(domainKeyMap.get(domain));
                 String decryptedMessage = aesUtils.decrypt(inputLine, domainKeyMap.get(domain));
                 String destinationDomain = protocol.getDestinationDomainFromMessage(decryptedMessage);

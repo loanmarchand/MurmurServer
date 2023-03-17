@@ -7,6 +7,7 @@ import org.MurmurServer.server.MurmurServer;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,8 +86,18 @@ public class ServerListener implements Runnable{
                 message = in.readLine();
 
             }
-        } catch (Exception e){
+        } catch (IOException e){
             e.printStackTrace();
+        }
+        catch (Exception e){
+            System.out.println("Relay déconnecté");
+        }
+        finally {
+            try {
+                relayClient.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }

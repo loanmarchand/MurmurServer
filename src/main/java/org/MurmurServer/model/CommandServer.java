@@ -53,6 +53,7 @@ public class CommandServer {
                         String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " FOLLOW " + user + " " + matcher1.group(1);
                         String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                         controller.sendToRelay(cryptedMessage);
+                        System.out.println("Message envoyé au relay ");
                     }
                 }
 
@@ -79,9 +80,6 @@ public class CommandServer {
                     tagList.add(newTag);
                 } else {
                     // TODO : transformer ligne pour l'inclure dans SEND
-                    // Doit ce transformer en ça :
-                    // SEND 1234 server1.godswila.guru server2.godswila.guru FOLLOW loans michel@server2.godswila.guru
-                    //FOLLOW user.getName() #test@server2.godswila.guru
                     Pattern pattern1 = Pattern.compile(protocol.getRxFollow());
                     Matcher matcher1 = pattern1.matcher(ligne);
                     if (matcher1.find()) {

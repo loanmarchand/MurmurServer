@@ -117,15 +117,20 @@ public class MurmurServer {
                 String message = protocol.build_echo(applicationData.getCurrentDomain(),DEFAULT_RELAY_PORT);
                 byte[] buffer = message.getBytes();
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, DEFAULT_RELAY_PORT);
-                socket.send(packet);
-                System.out.println("Message envoyé : " + message);
 
+                if(relayClient != null){
+                    scheduledExecutorService.shutdown();
+                    System.out.println("Arrêt de l'envoi de messages à Relay.");
+                } else {
+                    socket.send(packet);
+                    System.out.println("Message envoyé : " + message);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }, 0, 15, TimeUnit.SECONDS);
-
     }
+
 
 
     public void broadcastToAllClients(List<String> me, String message) {
