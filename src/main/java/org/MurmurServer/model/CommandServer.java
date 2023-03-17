@@ -73,14 +73,16 @@ public class CommandServer {
                     tags.add(group);
                     applicationData.getUser(user).setUserTags(tags);
                 }
-                System.out.println(applicationData.getUser(user).getUserTags());
-                for (String tag : tags){
-                    if (tag.equals(group)){
-                        System.out.println("Vous suivez déjà ce groupe");
-                    }
-                    else {
-                        tags.add(group);
-                        applicationData.getUser(user).setUserTags(tags);
+                else {
+                    System.out.println(applicationData.getUser(user).getUserTags());
+                    for (String tag : tags){
+                        if (tag.equals(group)){
+                            System.out.println("Vous suivez déjà ce groupe");
+                        }
+                        else {
+                            tags.add(group);
+                            applicationData.getUser(user).setUserTags(tags);
+                        }
                     }
                 }
                 List<Tag> tagList = applicationData.getTags();
@@ -95,6 +97,7 @@ public class CommandServer {
                             tag.setFollowers(users);
                             System.out.println(tag.getFollowers());
                         }
+                        i++;
                     }
                 }
                 applicationData.setTags(tagList);
@@ -105,7 +108,7 @@ public class CommandServer {
                     tagList.add(newTag);
                     applicationData.setTags(tagList);
                 }
-                else {
+                else if (!domain.equals(applicationData.getCurrentDomain())){
                     // TODO : transformer ligne pour l'inclure dans SEND
                         String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " FOLLOW " + user + " " + group;
                         String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
