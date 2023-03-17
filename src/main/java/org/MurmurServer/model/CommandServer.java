@@ -274,7 +274,7 @@ public class CommandServer {
         murmurServer.broadcastToAllClients(userToSendSameServer, protocol.createMessage(usera+"@"+applicationData.getCurrentDomain(), message));
         if (!userToSendOtherServer.isEmpty()&&murmurServer.getRelay()!=null){
             for (String user : userToSendOtherServer){
-                String send = "SEND 1234 "+applicationData.getCurrentDomain()+" "+protocol.getDomainFromUserDomain(user)+" MSGS "+usera+"@"+applicationData.getCurrentDomain()+" "+protocol.getDomainFromUserDomain(user)+" "+message;
+                String send = "SEND 1234 "+applicationData.getCurrentDomain()+" "+protocol.getDomainFromUserDomain(user)+" MSGS "+usera+" "+protocol.getUSernameFromUserDomain(user)+" "+message;
                 String cryptedMessage = aesUtils.encrypt(send, murmurServer.getSecretKey());
                 murmurServer.sendToRelay(cryptedMessage);
             }
@@ -340,7 +340,7 @@ public class CommandServer {
         if (matcher.find()) {
             String domain = matcher.group(4);
             if (domain.equals(applicationData.getCurrentDomain())) {
-                murmurServer.broadcastToAllClients(List.of(userWhoReceived), protocol.createMessage(userWhoSend, message));
+                murmurServer.broadcastToAllClients(List.of(protocol.getUSernameFromUserDomain(userWhoReceived)), protocol.createMessage(userWhoSend, message));
             }
         }
 

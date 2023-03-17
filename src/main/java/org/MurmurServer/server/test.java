@@ -14,7 +14,7 @@ public class test {
 
     public static void main(String[] args){
         String text = "loans@server1.godswila.guru";
-        Pattern pattern = Pattern.compile(protocol.getRxUserDomain());
+        Pattern pattern = Pattern.compile(protocol.get());
         Matcher matcher = pattern.matcher(text);
         System.out.println(text);
         if (matcher.find()){
