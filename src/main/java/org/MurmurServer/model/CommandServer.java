@@ -69,10 +69,14 @@ public class CommandServer {
                     domain = matcher2.group(2);
                 }
                 List<String> tags = applicationData.getUser(user).getUserTags();
+                if (tags.isEmpty()){
+                    tags.add(group);
+                    applicationData.getUser(user).setUserTags(tags);
+                }
+                System.out.println(applicationData.getUser(user).getUserTags());
                 for (String tag : tags){
                     if (tag.equals(group)){
                         System.out.println("Vous suivez déjà ce groupe");
-                        return;
                     }
                     else {
                         tags.add(group);
@@ -84,9 +88,13 @@ public class CommandServer {
                 for (Tag tag : tagList) {
                     if (tag.getTag().equals(group)) {
                         List<String> users = tag.getFollowers();
-                        users.add(user + "@" + applicationData.getCurrentDomain());
-                        tag.setFollowers(users);
-                        i++;
+                        if (users.contains(user + "@" + applicationData.getCurrentDomain())) {
+                            System.out.println("Vous suivez déjà ce groupe");
+                        } else {
+                            users.add(user + "@" + applicationData.getCurrentDomain());
+                            tag.setFollowers(users);
+                            System.out.println(tag.getFollowers());
+                        }
                     }
                 }
                 applicationData.setTags(tagList);
@@ -104,8 +112,9 @@ public class CommandServer {
                         controller.sendToRelay(cryptedMessage);
 
                 }
+                json.sauvegarder(applicationData);
             }
-            json.sauvegarder(applicationData);
+
         }
     }
 

@@ -18,9 +18,17 @@
         "thibaut@server2.godswila.guru"
       ],
       "userTags": [
+        "#test@server1.godswila.guru"
       ],
       "lockoutCounter": 0
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "tag": "#test@server1.godswila.guru",
+      "followers": [
+        "loans@server1.godswila.guru"
+      ]
+    }
+  ]
 }
