@@ -58,7 +58,6 @@ public class CommandServer {
 
 
             }
-            //TODO : A CHANGER NE MARCHE PAS
             if (group.matches(protocol.getRxTagDomain())) {
                 System.out.println("test");
                 Pattern pattern2 = Pattern.compile(protocol.getRxTagDomain());
@@ -110,7 +109,6 @@ public class CommandServer {
                     applicationData.setTags(tagList);
                 }
                 else if (!domain.equals(applicationData.getCurrentDomain())){
-                    // TODO : transformer ligne pour l'inclure dans SEND
                         String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " FOLLOW " + user + " " + group;
                         String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                         controller.sendToRelay(cryptedMessage);
@@ -152,6 +150,7 @@ public class CommandServer {
         }
 
         List<String> tags = applicationData.getUser(usera).getUserTags();
+        List<String> tagsTosendToOtherServer = new ArrayList<>();
         for(String tag : tags){
             Pattern patternTag = Pattern.compile(protocol.getRxTagDomain());
             Matcher matcherTag = patternTag.matcher(tag);
@@ -169,7 +168,7 @@ public class CommandServer {
                     }
                 }
                 else {
-                    //TODO
+                    tagsTosendToOtherServer.add(tag);
                 }
             }
         }
@@ -188,6 +187,14 @@ public class CommandServer {
                 murmurServer.sendToRelay(cryptedMessage);
             }
 
+        }
+        if (!tagsTosendToOtherServer.isEmpty()&&murmurServer.getRelay()!=null){
+            for (String tag : tagsTosendToOtherServer){
+                String send = "SEND 1234 "+applicationData.getCurrentDomain()+" "+tag+" MSGS "+usera+" "+message;
+                String cryptedMessage = aesUtils.encrypt(send, murmurServer.getSecretKey());
+                murmurServer.sendToRelay(cryptedMessage);
+
+            }
         }
     }
 
@@ -255,5 +262,18 @@ public class CommandServer {
             }
         }
 
+    }
+
+    public void sendTagRelay(String userWhoSend, String tag, String messageToSend, MurmurServer murmurServer) {
+        ApplicationData applicationData = json.getApplicationData();
+        List<Tag> tagList = applicationData.getTags();
+        for (Tag tag1 : tagList) {
+            if (tag1.getTag().equals(tag)) {
+                List<String> users = tag1.getFollowers();
+                for (String user : users) {
+                    murmurServer.broadcastToAllClients(List.of(protocol.getUSernameFromUserDomain(user)), protocol.createMessage(userWhoSend, messageToSend));
+                }
+            }
+        }
     }
 }

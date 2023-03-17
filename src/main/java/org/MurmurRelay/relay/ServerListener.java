@@ -9,6 +9,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,14 +72,23 @@ public class ServerListener implements Runnable{
                         }
                     }
                     // Gestion des messages
-                    if (ligneMsg.matches(protocol.geRxMsgs())){
+                    if (ligneMsg.matches(protocol.geRxMsgs())&& !Objects.equals(matcher.group(13), " ")){
                         System.out.println("Message");
                         String userWhoSend = matcher.group(10)+"@"+matcher.group(2);
-                        String userWhoReceive = matcher.group(12)+"@"+matcher.group(4);
+                        String userWhoReceive = matcher.group(11)+"@"+matcher.group(4);
                         String messageToSend = matcher.group(13);
 
                         commandServer = new CommandServer();
                         commandServer.sendMsgRelay(userWhoSend,userWhoReceive,messageToSend, murmurServer);
+                    }
+                    if (matcher.group(7).matches(protocol.getRxTagDomain())){
+                        System.out.println("Tag");
+                        String userWhoSend = matcher.group(10)+"@"+matcher.group(2);
+                        String tag = matcher.group(4);
+                        String messageToSend = matcher.group(11);
+
+                        commandServer = new CommandServer();
+                        commandServer.sendTagRelay(userWhoSend,tag,messageToSend, murmurServer);
                     }
                 }
 
