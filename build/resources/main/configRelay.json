@@ -1,5 +1,6 @@
 {
   "currentDomain": "relay.godswila.guru",
+  "networkInterface": "eth0",
   "domainKey": [
     {"test": "test"},
     {"server1.godswila.guru": "rpVAtjuNV4gm2zfN6Q9wgggsjwgmnMVKU1kcqL4zn2w="},
