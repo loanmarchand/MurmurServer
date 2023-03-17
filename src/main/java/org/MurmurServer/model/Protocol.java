@@ -37,7 +37,7 @@ public class Protocol {
     private static final String RX_REGISTER = "REGISTER" + RX_ESP + RX_USERNAME + RX_ESP + RX_ROUND + RX_ESP + RX_SALT + RX_HASH + RX_CRLF;
     public static final String RX_DISCONNECT = "DISCONNECT\r\n";
     private static final String RX_ECHO = "ECHO ([\\w\\.]{5,200}) (\\d{1,5})[\\r\\n]";
-    private static final String RX_MESSAGE_INTERNE = "((FOLLOW|MSGS)\\s+([a-zA-Z]+)\\s+([a-zA-Z]+)(?:@[a-zA-Z0-9.-]+(?:\\.[a-zA-Z]{2,}){1,2})?\\s*(.*))";
+    private static final String RX_MESSAGE_INTERNE = "(FOLLOW|MSGS)\\s+([a-zA-Z]+)\\s+#?([a-zA-Z0-9]+)(?:@([a-zA-Z0-9.-]+(?:\\.[a-zA-Z]{2,}){1,2}))?\\s*(.*)";
     private static final String RX_SEND = "SEND" + RX_ESP + RX_ID_DOMAIN + RX_ESP + RX_DOMAIN + RX_ESP + "("+RX_DOMAIN+"|"+RX_TAG_DOMAIN+")" + RX_ESP + RX_MESSAGE_INTERNE + RX_CRLF;
 
 
@@ -148,6 +148,9 @@ public class Protocol {
             if (text == null) {
                 text = matcher.group(8);
             }
+            if (text == null) {
+                text = matcher.group(4);
+            }
             return text;
         }
         return null;
@@ -213,5 +216,9 @@ public class Protocol {
             return matcher.group(2);
         }
         return null;
+    }
+
+    public String getMessageIntern() {
+        return RX_MESSAGE_INTERNE;
     }
 }

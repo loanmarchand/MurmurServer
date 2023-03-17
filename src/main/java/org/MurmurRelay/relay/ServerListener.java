@@ -44,7 +44,7 @@ public class ServerListener implements Runnable{
                 Pattern pattern = Pattern.compile(protocol.getRxSend());//TODO : CHANGER ICI
                 Matcher matcher = pattern.matcher(decrypt);
                 if (matcher.find()) {
-                    String ligneFollow = matcher.group(10)+" "+matcher.group(11)+"@"+matcher.group(2);
+                    String ligneFollow = matcher.group(9)+" "+matcher.group(11)+"@"+matcher.group(2);
                     String ligneMsg = matcher.group(9);
                     if (ligneFollow.matches(protocol.getRxFollow())){
                         String user = matcher.group(12);
