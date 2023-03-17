@@ -1,13 +1,11 @@
 package org.MurmurServer.model;
 
 import org.MurmurRelay.utils.AesUtils;
-import org.MurmurServer.server.ClientRunnable;
 import org.MurmurServer.server.MurmurServer;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class CommandServer {
     private Protocol protocol;
@@ -124,97 +122,8 @@ public class CommandServer {
         }
     }
 
-    public void sendMsg(String ligne, String usera, MurmurServer controller) throws Exception {
-        ApplicationData applicationData = json.getApplicationData();
 
-        Pattern pattern = Pattern.compile(protocol.getRxMessage());
-        Matcher matcher = pattern.matcher(ligne);
-        List<String> usersToSend = new ArrayList<>();
-        List<String> usersToSendRelay = new ArrayList<>();
-        List<String> tagsToSend = new ArrayList<>();
-        System.out.println(ligne);
-        if (matcher.find()) {
-            System.out.println("test");
-            List<String> users = applicationData.getUser(usera).getFollowers();
-            for (String user : users) {
-                System.out.println(user);
-                Pattern pattern1 = Pattern.compile(protocol.getRxUserDomain());
-                Matcher matcher1 = pattern1.matcher(user);
-                if (matcher1.find()) {
-                    System.out.println("testa");
-                    String domain = matcher1.group(4);
-                    System.out.println(domain);
-                    if (domain.equals(applicationData.getCurrentDomain())) {
-                        System.out.println("testb");
-                        usersToSend.add(user);
-                    } else {
-                        usersToSendRelay.add(user);
-
-                    }
-
-                }
-            }
-            List<String> tags = applicationData.getUser(usera).getUserTags();
-            for (String tag : tags) {
-                Pattern pattern1 = Pattern.compile(protocol.getRxTagDomain());
-                Matcher matcher1 = pattern1.matcher(tag);
-                if (matcher1.find()) {
-                    String domain = matcher1.group(2);
-                    if (domain.equals(applicationData.getCurrentDomain())) {
-                        List<Tag> tagList = applicationData.getTags();
-                        for (Tag tag1 : tagList) {
-                            if (tag1.getTag().equals(tag)) {
-                                List<String> users1 = tag1.getFollowers();
-                                usersToSend.addAll(users1);
-                            }
-                        }
-
-                    } else {
-                        tagsToSend.add(tag);
-                    }
-                }
-            }
-
-            controller.broadcastToAllClients(usersToSend, protocol.createMessage(usera+"@"+applicationData.getCurrentDomain(), matcher.group(1)));
-
-            List<String> cryptedMessages = new ArrayList<>();
-            //Construction message send followers
-            List<String> domains = new ArrayList<>();
-            for (String user : usersToSendRelay) {
-                Pattern pattern1 = Pattern.compile(protocol.getRxUserDomain());
-                Matcher matcher1 = pattern1.matcher(user);
-                if (matcher1.find()) {
-                    String domain = matcher1.group(4);
-                    String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " MSGS " + usera + "@" + applicationData.getCurrentDomain() + " " + user + " " + matcher.group(1);
-                    String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
-                    cryptedMessages.add(cryptedMessage);
-                }
-            }
-            //Nettoyage des doublons de cryptedMessages
-            Set<String> hs = new HashSet<>(cryptedMessages);
-            cryptedMessages.clear();
-            cryptedMessages.addAll(hs);
-            for (String cryptedMessage : cryptedMessages) {
-                controller.sendToRelay(cryptedMessage);
-            }
-
-            //Construction message send tags
-            List<String> domains1 = new ArrayList<>();
-            for (String tag : tagsToSend) {
-                Pattern pattern1 = Pattern.compile(protocol.getRxTagDomain());
-                Matcher matcher1 = pattern1.matcher(tag);
-                if (matcher1.find()) {
-                    String domain = matcher1.group(2);
-                    domains1.add(domain);
-                }
-            }
-
-        }
-
-
-    }
-
-    public void sendMsgTest(String ligne, String usera, MurmurServer murmurServer) throws Exception {
+    public void sendMsg(String ligne, String usera, MurmurServer murmurServer) throws Exception {
         Pattern pattern = Pattern.compile(protocol.getRxMessage());
         Matcher matcher = pattern.matcher(ligne);
         String message = "";
@@ -339,7 +248,9 @@ public class CommandServer {
         Matcher matcher = pattern.matcher(userWhoReceived);
         if (matcher.find()) {
             String domain = matcher.group(4);
+            System.out.println(domain);
             if (domain.equals(applicationData.getCurrentDomain())) {
+                System.out.println(true);
                 murmurServer.broadcastToAllClients(List.of(protocol.getUSernameFromUserDomain(userWhoReceived)), protocol.createMessage(userWhoSend, message));
             }
         }

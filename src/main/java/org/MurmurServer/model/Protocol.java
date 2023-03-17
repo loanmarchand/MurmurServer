@@ -43,7 +43,7 @@ public class Protocol {
 
     private static final String RX_FOLLOW = "FOLLOW\\s+((#?)\\w+@([\\w\\.]+))" + RX_CRLF;
     private static final String RX_MSG = "^MSG\\s+(.*)$" + RX_CRLF;
-    private static final String RX_MSGS = "MSGS"+RX_ESP+"("+RX_USERNAME+"|"+RX_USER_DOMAIN+")"+RX_ESP+"(.*)"+RX_CRLF;
+    private static final String RX_MSGS = "MSGS"+RX_ESP+"(.*)"+RX_CRLF;
 
 
     //REGEX de construction
