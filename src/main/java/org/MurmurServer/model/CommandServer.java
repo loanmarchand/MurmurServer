@@ -267,13 +267,20 @@ public class CommandServer {
     public void sendTagRelay(String userWhoSend, String tag, String messageToSend, MurmurServer murmurServer) {
         ApplicationData applicationData = json.getApplicationData();
         List<Tag> tagList = applicationData.getTags();
+        List<String> usersToSend = new ArrayList<>();
         for (Tag tag1 : tagList) {
             if (tag1.getTag().equals(tag)) {
                 List<String> users = tag1.getFollowers();
                 for (String user : users) {
-                    murmurServer.broadcastToAllClients(List.of(protocol.getUSernameFromUserDomain(user)), protocol.createMessage(userWhoSend, messageToSend));
+                    usersToSend.add(protocol.getUSernameFromUserDomain(user));
                 }
             }
         }
+        //Retire les doublons
+        Set<String> hs = new HashSet<>(usersToSend);
+        usersToSend.clear();
+        usersToSend.addAll(hs);
+        System.out.println(usersToSend);
+        murmurServer.broadcastToAllClients(usersToSend, protocol.createMessage(userWhoSend, messageToSend));
     }
 }

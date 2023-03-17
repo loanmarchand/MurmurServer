@@ -2,6 +2,7 @@ package org.MurmurRelay.relay;
 
 import org.MurmurRelay.utils.AesUtils;
 import org.MurmurRelay.utils.RelayConfig;
+import org.MurmurServer.model.ApplicationData;
 import org.MurmurServer.model.Json;
 import org.MurmurServer.model.Protocol;
 
@@ -67,8 +68,7 @@ public class MurmurRelay {
     }
 
     private void handleServerCommunication(Socket serverSocket, String domain) {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(serverSocket.getOutputStream()))) {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()))) {
 
             String inputLine;
             while ((inputLine = in.readLine()) != null) {

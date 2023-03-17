@@ -1,5 +1,9 @@
 package org.MurmurServer.server;
 
+import org.MurmurRelay.utils.RelayConfig;
+import org.MurmurServer.model.ApplicationData;
+import org.MurmurServer.model.Json;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -20,6 +24,12 @@ public class NetChoser {
         }
         System.out.printf("Select your interface :");
         NetworkInterface selected = getInterfacesByIndex(console.nextInt());
+        Json json = new Json();
+        ApplicationData applicationData = json.getApplicationData();
+        applicationData.setNetworkInterface(selected.getName());
+        json.sauvegarder(applicationData);
+        RelayConfig relayConfig = new RelayConfig("src/main/resources/configRelay.json");
+        relayConfig.setNetworkInterface(selected.getName());
         System.out.printf("Selected interface: %s\n", selected.getDisplayName());
 
     }
