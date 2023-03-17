@@ -54,10 +54,9 @@ public class ServerListener implements Runnable{
                         //Afficher tous les groupes
                         if (matcher1.find()) {
                             try {
-                                String tag = matcher1.group(2);
-                                if (tag.equals("#")){
+                                if (decrypt.contains("#")){
                                     commandServer = new CommandServer();
-                                    commandServer.followTagRelay(matcher1.group(1),user+"@"+domain);
+                                    commandServer.followTagRelay(ligneFollow,user+"@"+domain);
                                     System.out.println("Follow TAG");
                                 }
                                 else {

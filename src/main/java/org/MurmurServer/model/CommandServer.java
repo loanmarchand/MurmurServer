@@ -69,6 +69,7 @@ public class CommandServer {
                     domain = matcher2.group(2);
                 }
                 List<String> tags = applicationData.getUser(user).getUserTags();
+                List<String> tagsToAdd = new ArrayList<>();
                 if (tags.isEmpty()){
                     tags.add(group);
                     applicationData.getUser(user).setUserTags(tags);
@@ -80,10 +81,11 @@ public class CommandServer {
                             System.out.println("Vous suivez déjà ce groupe");
                         }
                         else {
-                            tags.add(group);
-                            applicationData.getUser(user).setUserTags(tags);
+                            tagsToAdd.add(group);
                         }
                     }
+                    tags.addAll(tagsToAdd);
+                    applicationData.getUser(user).setUserTags(tags);
                 }
                 List<Tag> tagList = applicationData.getTags();
                 int i = 0;
@@ -213,6 +215,13 @@ public class CommandServer {
 
 
     public void followTagRelay(String ligne, String user) {
+        Pattern pattern = Pattern.compile(protocol.getRxFollow());
+        Matcher matcher = pattern.matcher(ligne);
+        String group="";
+        if (matcher.find()) {
+            group = matcher.group(1);
+
+        }
         ApplicationData applicationData = json.getApplicationData();
         List<Tag> tagList = applicationData.getTags();
         int i = 0;

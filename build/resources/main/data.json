@@ -19,7 +19,8 @@
         "romain@server2.godswila.guru"
       ],
       "userTags": [
-        "#test@server1.godswila.guru"
+        "#test@server1.godswila.guru",
+        "#untag@server2.godswila.guru"
       ],
       "lockoutCounter": 0
     }
