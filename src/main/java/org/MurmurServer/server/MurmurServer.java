@@ -135,9 +135,8 @@ public class MurmurServer {
 
     public void broadcastToAllClients(List<String> me, String message) {
         for (ClientRunnable client : clientList) {
-            if (!me.contains(client.getUser().getLogin()+"@"+ json.getApplicationData().getCurrentDomain())) {
+            if (me.contains(client.getUser().getLogin())) {
                 client.sendMessage(message);
-                System.out.println("Message envoyé à " + client.getUser().getLogin());
             }
         }
 

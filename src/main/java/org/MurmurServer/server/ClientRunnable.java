@@ -127,7 +127,7 @@ public class ClientRunnable implements Runnable {
                 //Gestion des messages
                 if (ligne.matches(protocol.getRxMessage())){
                     commandServer = new CommandServer();
-                    commandServer.sendMsg(ligne,user.getLogin(),controller);
+                    commandServer.sendMsgTest(ligne,user.getLogin(),controller);
                 }
 
                 ligne = in.readLine();

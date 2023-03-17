@@ -43,6 +43,7 @@ public class CommandServer {
                             } else {
                                 followers.add(user + "@" + domain);
                                 applicationData.getUser(user1.getLogin()).setFollowers(followers);
+                                json.sauvegarder(applicationData);
                                 //affiche les variables de appData
                                 System.out.println(applicationData.getUser(user1.getLogin()).getFollowers());
                             }
@@ -174,7 +175,7 @@ public class CommandServer {
                 }
             }
 
-            controller.broadcastToAllClients(usersToSend, protocol.createMessage(usera, matcher.group(1)));
+            controller.broadcastToAllClients(usersToSend, protocol.createMessage(usera+"@"+applicationData.getCurrentDomain(), matcher.group(1)));
 
             List<String> cryptedMessages = new ArrayList<>();
             //Construction message send followers
@@ -211,6 +212,37 @@ public class CommandServer {
         }
 
 
+    }
+
+    public void sendMsgTest(String ligne, String usera, MurmurServer murmurServer){
+        Pattern pattern = Pattern.compile(protocol.getRxMessage());
+        Matcher matcher = pattern.matcher(ligne);
+        String message = "";
+        if (matcher.find()) {
+            message = matcher.group(1);
+        }
+        List<String> userToSendSameServer = new ArrayList<>();
+        List<String> userToSendOtherServer = new ArrayList<>();
+
+        ApplicationData applicationData = json.getApplicationData();
+
+        List<String> followers = applicationData.getUser(usera).getFollowers();
+
+        for (String follower : followers){
+            Pattern pattern1 = Pattern.compile(protocol.getRxUserDomain());
+            Matcher matcher1 = pattern1.matcher(follower);
+            if (matcher1.find()){
+                String domain = matcher1.group(4);
+                if (domain.equals(applicationData.getCurrentDomain())){
+                    userToSendSameServer.add(protocol.getUSernameFromUserDomain(follower));
+                }
+                else {
+                    userToSendOtherServer.add(follower);
+                }
+            }
+        }
+        System.out.println(userToSendSameServer);
+        murmurServer.broadcastToAllClients(userToSendSameServer, protocol.createMessage(usera+"@"+applicationData.getCurrentDomain(), message));
     }
 
 
