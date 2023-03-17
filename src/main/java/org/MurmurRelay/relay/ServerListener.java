@@ -43,28 +43,25 @@ public class ServerListener implements Runnable{
                 Pattern pattern = Pattern.compile(protocol.getRxSend());//TODO : CHANGER ICI
                 Matcher matcher = pattern.matcher(decrypt);
                 if (matcher.find()) {
-                    String ligne = matcher.group(10)+" "+matcher.group(13);
-                    String user = matcher.group(11);
-                    String domain = matcher.group(2);
-                    String ligneMsg = matcher.group(10)+" "+user+" "+matcher.group(19);
-                    System.out.println(ligne + " " + user + " " + domain);
-                    System.out.println(ligneMsg);
-                    if (ligne.matches(protocol.getRxFollow())){
-
+                    String ligneFollow = matcher.group(10)+" "+matcher.group(11)+"@"+matcher.group(2);
+                    String ligneMsg = matcher.group(9);
+                    if (ligneFollow.matches(protocol.getRxFollow())){
+                        String user = matcher.group(12);
+                        String domain = matcher.group(4);
                         Pattern pattern1 = Pattern.compile(protocol.getRxFollow());
-                        Matcher matcher1 = pattern1.matcher(ligne);
+                        Matcher matcher1 = pattern1.matcher(ligneFollow);
                         //Afficher tous les groupes
                         if (matcher1.find()) {
                             try {
                                 String tag = matcher1.group(2);
                                 if (tag.equals("#")){
                                     commandServer = new CommandServer();
-                                    commandServer.followTagRelay(matcher1.group(1),user,domain);
+                                    commandServer.followTagRelay(matcher1.group(1),user+"@"+domain);
                                     System.out.println("Follow TAG");
                                 }
                                 else {
                                     commandServer = new CommandServer();
-                                    commandServer.sendFollowUser(ligne,protocol.buildFollow(user,domain), user);
+                                    commandServer.sendFollowUser(ligneFollow,user);
                                     System.out.println("Follow USER");
                                 }
                             }catch (Exception e){
@@ -76,8 +73,12 @@ public class ServerListener implements Runnable{
                     // Gestion des messages
                     if (ligneMsg.matches(protocol.geRxMsgs())){
                         System.out.println("Message");
+                        String userWhoSend = matcher.group(11)+"@"+matcher.group(2);
+                        String userWhoReceive = matcher.group(12)+"@"+matcher.group(4);
+                        String messageToSend = matcher.group(13);
+
                         commandServer = new CommandServer();
-                        commandServer.sendMsgRelay(matcher.group(19), user, murmurServer);
+                        commandServer.sendMsgRelay(userWhoSend,userWhoReceive,messageToSend, murmurServer);
                     }
                 }
 

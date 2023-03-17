@@ -8,28 +8,6 @@
   "networkInterface": "eth12",
   "base64AES": "rpVAtjuNV4gm2zfN6Q9wgggsjwgmnMVKU1kcqL4zn2w\u003d",
   "tls": true,
-  "users": [
-    {
-      "login": "loans",
-      "bcryptHash": "6ylxfOWaEDKL.UwShXDH5Mel/Pg9B/m",
-      "bcryptRound": 14,
-      "bcryptSalt": "FvE0blSZ2ORshqb2/UNa/u",
-      "followers": [
-        "thibaut@server2.godswila.guru"
-      ],
-      "userTags": [
-        "#test@server1.godswila.guru",
-        "#test2@server2.godswila.guru"
-      ],
-      "lockoutCounter": 0
-    }
-  ],
-  "tags": [
-    {
-      "tag": "#test@server1.godswila.guru",
-      "followers": [
-        "loans@server1.godswila.guru"
-      ]
-    }
-  ]
+  "users": [],
+  "tags": []
 }

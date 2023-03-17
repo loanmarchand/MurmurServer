@@ -13,10 +13,12 @@ public class test {
     private static final Protocol protocol = new Protocol();
 
     public static void main(String[] args){
-        String text;
-        Pattern pattern = Pattern.compile(protocol.getRxSend());
-        Matcher matcher = pattern.matcher("SEND 1234 server2.godswila.guru server1.godswila.guru MSGS thibaut@server2.godswila.guru loans@server1.godswila.guru Test");
+        String text = "romain@server1.godswila.guru";
+        Pattern pattern = Pattern.compile(protocol.getRxUserDomain());
+        Matcher matcher = pattern.matcher(text);
+        System.out.println(text);
         if (matcher.find()){
+            System.out.println(true);
             for (int i = 1; i <= matcher.groupCount(); i++) {
                 System.out.println(matcher.group(i) + " " + i);
             }

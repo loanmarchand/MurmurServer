@@ -50,7 +50,7 @@ public class CommandServer {
                             System.out.println("Cet utilisateur n'existe pas");
                         }
                     } else {
-                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " FOLLOW " + user+"@"+applicationData.getCurrentDomain()+" "+ user + " " + matcher1.group(1);
+                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " FOLLOW " + user + " " + matcher1.group(1);
                         String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                         controller.sendToRelay(cryptedMessage);
                     }
@@ -87,7 +87,7 @@ public class CommandServer {
                     if (matcher1.find()) {
                         String groupe1 = matcher1.group(1);
                         String groupe2 = matcher1.group(3);
-                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + groupe2 + " FOLLOW " + user+"@"+applicationData.getCurrentDomain()+" "+user + " " + groupe1;
+                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + groupe2 + " FOLLOW " + user + "@" + applicationData.getCurrentDomain() + " " + user + " " + groupe1;
                         String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                         controller.sendToRelay(cryptedMessage);
                     }
@@ -158,7 +158,7 @@ public class CommandServer {
                 Matcher matcher1 = pattern1.matcher(user);
                 if (matcher1.find()) {
                     String domain = matcher1.group(4);
-                    String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " MSGS " + usera+"@"+applicationData.getCurrentDomain() + " " +user +" " + matcher.group(1);
+                    String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " MSGS " + usera + "@" + applicationData.getCurrentDomain() + " " + user + " " + matcher.group(1);
                     String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                     cryptedMessages.add(cryptedMessage);
                 }
@@ -188,66 +188,63 @@ public class CommandServer {
     }
 
 
-    public void followTagRelay(String ligne, String user, String domain) {
+    public void followTagRelay(String ligne, String user) {
         ApplicationData applicationData = json.getApplicationData();
         List<Tag> tagList = applicationData.getTags();
         int i = 0;
         for (Tag tag : tagList) {
             if (tag.getTag().equals(ligne)) {
                 List<String> users = tag.getFollowers();
-                users.add(user + "@" + domain);
+                users.add(user);
                 tag.setFollowers(users);
                 i++;
             }
         }
         if (i == 0 && protocol.matchesWithServDomain(ligne, applicationData.getCurrentDomain())) {
-            Tag newTag = new Tag(ligne, List.of(user + "@" + domain));
+            Tag newTag = new Tag(ligne, List.of(user));
             tagList.add(newTag);
         }
         json.sauvegarder(applicationData);
     }
 
-    public void sendFollowUser(String ligne,String s, String user) {
+    public void sendFollowUser(String ligne, String user) {
         Pattern pattern = Pattern.compile(protocol.getRxFollow());
         Matcher matcher = pattern.matcher(ligne);
-        Matcher matcher2 = pattern.matcher(s);
         ApplicationData applicationData = json.getApplicationData();
-        if (matcher.find() && matcher2.find()) {
+        if (matcher.find()) {
             String group = matcher.group(1);
-            String group2 = matcher2.group(1);
             System.out.println(group);
-            if (group.matches(protocol.getRxUserDomain())) {
-                Pattern pattern1 = Pattern.compile(protocol.getRxUserDomain());
-                Matcher matcher1 = pattern1.matcher(group);
-                Pattern pattern3 = Pattern.compile(protocol.getRxUserDomain());
-                Matcher matcher3 = pattern3.matcher(group2);
-                if (matcher1.find() && matcher3.find()) {
-                    String domain = matcher3.group(4);
-                    String login = matcher1.group(2);
-                    Utilisateur user1 = applicationData.getUser(login);
-                    if (user1 != null) {
-                        List<String> followers = applicationData.getUser(user1.getLogin()).getFollowers();
-                        if (followers.contains(group)) {
-                            System.out.println("Vous suivez déjà cet utilisateur");
-                        } else {
-                            followers.add(user + "@" + domain);
-                            applicationData.getUser(user1.getLogin()).setFollowers(followers);
-                            //affiche les variables de appData
-                            System.out.println(applicationData.getUser(user1.getLogin()).getFollowers());
-                        }
-                    } else {
-                        System.out.println("Cet utilisateur n'existe pas");
-                    }
-
+            Utilisateur user1 = applicationData.getUser(user);
+            if (user1 != null) {
+                List<String> followers = applicationData.getUser(user1.getLogin()).getFollowers();
+                if (followers.contains(group)) {
+                    System.out.println("Vous suivez déjà cet utilisateur");
+                } else {
+                    followers.add(group);
+                    applicationData.getUser(user).setFollowers(followers);
+                    //affiche les variables de appData
+                    System.out.println(applicationData.getUser(user1.getLogin()).getFollowers());
                 }
+            } else {
+                System.out.println("Cet utilisateur n'existe pas");
             }
+
         }
+
+
         json.sauvegarder(applicationData);
     }
 
-    public void sendMsgRelay(String buildMsg, String username, MurmurServer murmurServer) {
-
-
+    public void sendMsgRelay(String userWhoSend, String userWhoReceived,String message, MurmurServer murmurServer) {
+        ApplicationData applicationData = json.getApplicationData();
+        Pattern pattern = Pattern.compile(protocol.getRxUserDomain());
+        Matcher matcher = pattern.matcher(userWhoReceived);
+        if (matcher.find()) {
+            String domain = matcher.group(4);
+            if (domain.equals(applicationData.getCurrentDomain())) {
+                murmurServer.broadcastToAllClients(List.of(userWhoReceived), protocol.createMessage(userWhoSend, message));
+            }
+        }
 
     }
 }

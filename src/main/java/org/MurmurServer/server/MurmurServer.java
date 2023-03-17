@@ -109,7 +109,7 @@ public class MurmurServer {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             try(MulticastSocket socket = new MulticastSocket()){
-                socket.setNetworkInterface(NetworkInterface.getByName("eth5"));
+                socket.setNetworkInterface(NetworkInterface.getByName("wlan2"));
                 InetAddress address = InetAddress.getByName("224.1.1.255");
                 socket.joinGroup(address);
                 ApplicationData applicationData = json.getApplicationData();
@@ -132,6 +132,7 @@ public class MurmurServer {
         for (ClientRunnable client : clientList) {
             if (!me.contains(client.getUser().getLogin()+"@"+ json.getApplicationData().getCurrentDomain())) {
                 client.sendMessage(message);
+                System.out.println("Message envoyé à " + client.getUser().getLogin());
             }
         }
 
