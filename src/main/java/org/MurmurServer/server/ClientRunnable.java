@@ -1,6 +1,5 @@
 package org.MurmurServer.server;
 
-import org.MurmurRelay.utils.AesUtils;
 import org.MurmurServer.model.*;
 
 import java.io.*;
@@ -13,28 +12,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ClientRunnable implements Runnable {
-    private final Socket monClient;
     private BufferedReader in;
     private PrintWriter out;
     private boolean isConnected = false;
     private final MurmurServer controller;
     private final Protocol protocol;
     private String randomCaract;
-    private ApplicationData applicationData;
+    private final ApplicationData applicationData;
     private String shaCalculated;
     private Utilisateur user;
     private final Json json;
-    private AesUtils aesUtils;
-    private CommandServer commandServer;
 
 
     public ClientRunnable(Socket client, MurmurServer controller) {
         this.json = new Json();
         this.applicationData = json.getApplicationData();
-        this.monClient = client;
         this.controller=  controller;
         protocol = new Protocol();
-        aesUtils = new AesUtils();
         try {
             in = new BufferedReader(new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
             out = new PrintWriter(new OutputStreamWriter(client.getOutputStream(), StandardCharsets.UTF_8), true);
@@ -79,7 +73,7 @@ public class ClientRunnable implements Runnable {
                             String rx_hash = matcher.group(9);
                             int rx_round = Integer.parseInt(matcher.group(6));
                             String salt = matcher.group(7);
-                            user = new Utilisateur(rx_username, rx_hash, rx_round, salt, new ArrayList<String>(), new ArrayList<String>(), 0);
+                            user = new Utilisateur(rx_username, rx_hash, rx_round, salt, new ArrayList<>(), new ArrayList<>(), 0);
                             applicationData.addUser(user);
                             json.sauvegarder(applicationData);
                             sendMessage("+OK\r\n");
@@ -120,6 +114,7 @@ public class ClientRunnable implements Runnable {
                     sendMessage("+OK\r\n");
                 }
                 //Gestion des follows
+                CommandServer commandServer;
                 if (ligne.matches(protocol.getRxFollow())){
                     commandServer = new CommandServer();
                     commandServer.sendFollow(ligne, user.getLogin(),controller);

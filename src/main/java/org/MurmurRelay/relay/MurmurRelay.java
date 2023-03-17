@@ -2,7 +2,6 @@ package org.MurmurRelay.relay;
 
 import org.MurmurRelay.utils.AesUtils;
 import org.MurmurRelay.utils.RelayConfig;
-import org.MurmurServer.model.ApplicationData;
 import org.MurmurServer.model.Json;
 import org.MurmurServer.model.Protocol;
 
@@ -17,18 +16,15 @@ import java.util.regex.Pattern;
 public class MurmurRelay {
     private final int relayPort;
     private final Protocol protocol;
-    private final Json json;
     private final HashMap<String, String> domainKeyMap;
     private final Map<String, Socket> connectedServers;
-    private AesUtils aesUtils;
-    private RelayConfig relayConfig;
+    private final AesUtils aesUtils;
 
     public MurmurRelay(int relayPort) throws IOException {
         this.relayPort = relayPort;
         this.protocol = new Protocol();
-        this.json = new Json();
         this.aesUtils = new AesUtils();
-        this.relayConfig = new RelayConfig("src/main/resources/configRelay.json");
+        RelayConfig relayConfig = new RelayConfig("src/main/resources/configRelay.json");
         this.domainKeyMap =  relayConfig.getDomainKeyMap();
         this.connectedServers = new HashMap<>();
 
@@ -40,7 +36,7 @@ public class MurmurRelay {
             InetAddress groupAddress = InetAddress.getByName("224.1.1.255");
             multicastSocket.setNetworkInterface(NetworkInterface.getByName("eth5"));
             multicastSocket.joinGroup(groupAddress);
-
+            System.out.println("Lancement du serveur relay");
             while (true) {
                 byte[] buffer = new byte[1024];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);

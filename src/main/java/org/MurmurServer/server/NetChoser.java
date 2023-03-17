@@ -22,7 +22,7 @@ public class NetChoser {
         for(int index=0; index < allInterfaceNames.length; ++index) {
             System.out.printf("%d. %s\n", index, allInterfaceNames[index]);
         }
-        System.out.printf("Select your interface :");
+        System.out.print("Select your interface :");
         NetworkInterface selected = getInterfacesByIndex(console.nextInt());
         Json json = new Json();
         ApplicationData applicationData = json.getApplicationData();

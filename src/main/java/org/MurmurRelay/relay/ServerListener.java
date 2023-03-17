@@ -7,10 +7,7 @@ import org.MurmurServer.server.MurmurServer;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,10 +15,8 @@ import java.util.regex.Pattern;
 public class ServerListener implements Runnable{
     private final Socket relayClient;
     private final MurmurServer murmurServer;
-    private BufferedReader in;
-    private PrintWriter out;
-    private AesUtils aesUtils;
-    private CommandServer commandServer;
+    private final BufferedReader in;
+    private final AesUtils aesUtils;
 
     public ServerListener(Socket relayClient, MurmurServer murmurServer) {
         this.relayClient = relayClient;
@@ -29,7 +24,6 @@ public class ServerListener implements Runnable{
         aesUtils = new AesUtils();
         try {
             in = new BufferedReader(new InputStreamReader(relayClient.getInputStream(), StandardCharsets.UTF_8));
-            out = new PrintWriter(new OutputStreamWriter(relayClient.getOutputStream(), StandardCharsets.UTF_8), true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -44,11 +38,12 @@ public class ServerListener implements Runnable{
             while (message!=null){
                 String decrypt = aesUtils.decrypt(message, murmurServer.getSecretKey());
                 System.out.println(decrypt);
-                Pattern pattern = Pattern.compile(protocol.getRxSend());//TODO : CHANGER ICI
+                Pattern pattern = Pattern.compile(protocol.getRxSend());
                 Matcher matcher = pattern.matcher(decrypt);
                 if (matcher.find()) {
                     String ligneFollow = matcher.group(9)+" "+matcher.group(11)+"@"+matcher.group(2);
                     String ligneMsg = matcher.group(9)+" "+matcher.group(13);
+                    CommandServer commandServer;
                     if (ligneFollow.matches(protocol.getRxFollow())){
                         String user = matcher.group(11);
                         String domain = matcher.group(4);
@@ -74,7 +69,7 @@ public class ServerListener implements Runnable{
                         }
                     }
                     // Gestion des messages
-                    if (ligneMsg.matches(protocol.geRxMsgs())&& !Objects.equals(matcher.group(13), " ")){
+                    else if (ligneMsg.matches(protocol.geRxMsgs())&& !Objects.equals(matcher.group(13), " ")){
                         System.out.println("Message");
                         String userWhoSend = matcher.group(10)+"@"+matcher.group(2);
                         String userWhoReceive = matcher.group(11)+"@"+matcher.group(4);
@@ -83,7 +78,7 @@ public class ServerListener implements Runnable{
                         commandServer = new CommandServer();
                         commandServer.sendMsgRelay(userWhoSend,userWhoReceive,messageToSend, murmurServer);
                     }
-                    if (matcher.group(7).matches(protocol.getRxTagDomain())){
+                    else if (matcher.group(7).matches(protocol.getRxTagDomain())){
                         System.out.println("Tag");
                         String userWhoSend = matcher.group(10)+"@"+matcher.group(2);
                         String tag = matcher.group(4);
@@ -102,6 +97,7 @@ public class ServerListener implements Runnable{
         }
         catch (Exception e){
             System.out.println("Relay déconnecté");
+            e.printStackTrace();
         }
         finally {
             try {

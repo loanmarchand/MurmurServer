@@ -8,9 +8,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommandServer {
-    private Protocol protocol;
-    private Json json;
-    private AesUtils aesUtils;
+    private final Protocol protocol;
+    private final Json json;
+    private final AesUtils aesUtils;
 
     public CommandServer() {
         protocol = new Protocol();
