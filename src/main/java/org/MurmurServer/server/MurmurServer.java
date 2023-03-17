@@ -171,4 +171,8 @@ public class MurmurServer {
         clientList.add(runnable);
         executorService.execute(runnable);
     }
+
+    public Socket getRelay() {
+        return relayClient;
     }
+}

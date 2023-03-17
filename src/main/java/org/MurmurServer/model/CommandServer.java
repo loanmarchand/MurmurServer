@@ -214,7 +214,7 @@ public class CommandServer {
 
     }
 
-    public void sendMsgTest(String ligne, String usera, MurmurServer murmurServer){
+    public void sendMsgTest(String ligne, String usera, MurmurServer murmurServer) throws Exception {
         Pattern pattern = Pattern.compile(protocol.getRxMessage());
         Matcher matcher = pattern.matcher(ligne);
         String message = "";
@@ -241,8 +241,45 @@ public class CommandServer {
                 }
             }
         }
+
+        List<String> tags = applicationData.getUser(usera).getUserTags();
+        for(String tag : tags){
+            Pattern patternTag = Pattern.compile(protocol.getRxTagDomain());
+            Matcher matcherTag = patternTag.matcher(tag);
+            if (matcherTag.find()){
+                String domain = matcherTag.group(2);
+                if(domain.equals(applicationData.getCurrentDomain())){
+                    List<Tag> tagList = applicationData.getTags();
+                    for (Tag tag1 : tagList){
+                        if (tag1.getTag().equals(tag)){
+                            List<String> users = tag1.getFollowers();
+                            for (String user : users){
+                                userToSendSameServer.add(protocol.getUSernameFromUserDomain(user));
+                            }
+                        }
+                    }
+                }
+                else {
+                    //TODO
+                }
+            }
+        }
+
+        //Retire les doublons
+        Set<String> hs = new HashSet<>(userToSendSameServer);
+        userToSendSameServer.clear();
+        userToSendSameServer.addAll(hs);
+        userToSendSameServer.remove(usera);
         System.out.println(userToSendSameServer);
         murmurServer.broadcastToAllClients(userToSendSameServer, protocol.createMessage(usera+"@"+applicationData.getCurrentDomain(), message));
+        if (!userToSendOtherServer.isEmpty()&&murmurServer.getRelay()!=null){
+            for (String user : userToSendOtherServer){
+                String send = "SEND 1234 "+applicationData.getCurrentDomain()+" "+protocol.getDomainFromUserDomain(user)+" MSGS "+usera+"@"+applicationData.getCurrentDomain()+" "+protocol.getDomainFromUserDomain(user)+" "+message;
+                String cryptedMessage = aesUtils.encrypt(send, murmurServer.getSecretKey());
+                murmurServer.sendToRelay(cryptedMessage);
+            }
+
+        }
     }
 
 

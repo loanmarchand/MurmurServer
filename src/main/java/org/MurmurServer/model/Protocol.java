@@ -225,4 +225,13 @@ public class Protocol {
     public boolean matchesWithServDomainTAG(String ligne, String currentDomain) {
         return false;
     }
+
+    public String getDomainFromUserDomain(String user) {
+        Pattern pattern = Pattern.compile(RX_USER_DOMAIN);
+        Matcher matcher = pattern.matcher(user);
+        if (matcher.find()) {
+            return matcher.group(4);
+        }
+        return null;
+    }
 }

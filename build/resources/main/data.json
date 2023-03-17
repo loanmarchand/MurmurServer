@@ -15,10 +15,34 @@
       "bcryptRound": 14,
       "bcryptSalt": "P3ZpihZbAUC0hpxf8B4rF.",
       "followers": [
+        "thibaut@server2.godswila.guru"
       ],
-      "userTags": [],
+      "userTags": [
+        "#testloans@server2.godswila.guru",
+        "#test@server1.godswila.guru"
+      ],
+      "lockoutCounter": 0
+    },
+    {
+      "login": "thibaut",
+      "bcryptHash": "D.9xQqFlr0iEYl8GG46qY/lKfftlDUG",
+      "bcryptRound": 14,
+      "bcryptSalt": "xJ35MzTaQsoHy7oVsDrhmO",
+      "followers": [],
+      "userTags": [
+        "#test@server1.godswila.guru"
+      ],
       "lockoutCounter": 0
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "tag": "#test@server1.godswila.guru",
+      "followers": [
+        "thibaut@server2.godswila.guru",
+        "thibaut@server1.godswila.guru",
+        "loans@server1.godswila.guru"
+      ]
+    }
+  ]
 }
