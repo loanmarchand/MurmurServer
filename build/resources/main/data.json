@@ -14,10 +14,10 @@
       "bcryptHash": "uKVisNbGq6ZYYyaFYCyRnPZ4kJlqZhm",
       "bcryptRound": 14,
       "bcryptSalt": "PEhwhqXIHplqMqk7AlkTt.",
-      "followers": [],
+      "followers": [
+        "thibaut@server2.godswila.guru"
+      ],
       "userTags": [
-        "#test29@server1.godswila.guru",
-        "#test2@server2.godswila.guru"
       ],
       "lockoutCounter": 0
     }

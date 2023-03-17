@@ -13,8 +13,8 @@ public class test {
     private static final Protocol protocol = new Protocol();
 
     public static void main(String[] args){
-        String text = "romain@server1.godswila.guru";
-        Pattern pattern = Pattern.compile(protocol.getRxUserDomain());
+        String text = "#test@server1.godswila.guru";
+        Pattern pattern = Pattern.compile(protocol.getRxTagDomain());
         Matcher matcher = pattern.matcher(text);
         System.out.println(text);
         if (matcher.find()){

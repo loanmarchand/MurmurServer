@@ -109,7 +109,7 @@ public class MurmurServer {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             try(MulticastSocket socket = new MulticastSocket()){
-                socket.setNetworkInterface(NetworkInterface.getByName("wlan2"));
+                socket.setNetworkInterface(NetworkInterface.getByName("eth19"));
                 InetAddress address = InetAddress.getByName("224.1.1.255");
                 socket.joinGroup(address);
                 ApplicationData applicationData = json.getApplicationData();

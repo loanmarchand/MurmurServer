@@ -59,12 +59,26 @@ public class CommandServer {
 
 
             }
+            //TODO : A CHANGER NE MARCHE PAS
             if (group.matches(protocol.getRxTagDomain())) {
                 System.out.println("test");
-                String domain = matcher.group(2);
+                Pattern pattern2 = Pattern.compile(protocol.getRxTagDomain());
+                Matcher matcher2 = pattern2.matcher(group);
+                String domain = "";
+                if (matcher2.find()){
+                    domain = matcher2.group(2);
+                }
                 List<String> tags = applicationData.getUser(user).getUserTags();
-                tags.add(group);
-                applicationData.getUser(user).setUserTags(tags);
+                for (String tag : tags){
+                    if (tag.equals(group)){
+                        System.out.println("Vous suivez déjà ce groupe");
+                        return;
+                    }
+                    else {
+                        tags.add(group);
+                        applicationData.getUser(user).setUserTags(tags);
+                    }
+                }
                 List<Tag> tagList = applicationData.getTags();
                 int i = 0;
                 for (Tag tag : tagList) {
@@ -75,20 +89,20 @@ public class CommandServer {
                         i++;
                     }
                 }
-                if (i == 0 && domain.equals(applicationData.getCurrentDomain())) {
+                applicationData.setTags(tagList);
+                System.out.println(i);
+                System.out.println(domain);
+                if (i == 0 && domain.equals(applicationData.getCurrentDomain())) {//JE PENSE ICI QUE C'EST LA QUE CA BUG
                     Tag newTag = new Tag(group, List.of(user + "@" + applicationData.getCurrentDomain()));
                     tagList.add(newTag);
-                } else {
+                    applicationData.setTags(tagList);
+                }
+                else {
                     // TODO : transformer ligne pour l'inclure dans SEND
-                    Pattern pattern1 = Pattern.compile(protocol.getRxFollow());
-                    Matcher matcher1 = pattern1.matcher(ligne);
-                    if (matcher1.find()) {
-                        String groupe1 = matcher1.group(1);
-                        String groupe2 = matcher1.group(3);
-                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + groupe2 + " FOLLOW " + user + "@" + applicationData.getCurrentDomain() + " " + user + " " + groupe1;
+                        String message = "SEND 1234 " + applicationData.getCurrentDomain() + " " + domain + " FOLLOW " + user + " " + group;
                         String cryptedMessage = aesUtils.encrypt(message, controller.getSecretKey());
                         controller.sendToRelay(cryptedMessage);
-                    }
+
                 }
             }
             json.sauvegarder(applicationData);
